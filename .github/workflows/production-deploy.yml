@@ -1,6 +1,9 @@
 name: production-netlify
 
 on:
+  workflow_run:
+    workflows: ["ci"]
+    types: [completed]
   push:
     branches:
       - main
@@ -8,6 +11,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: prod
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js
