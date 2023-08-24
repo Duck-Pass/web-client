@@ -1,13 +1,20 @@
-import { MainNavBar } from '../components/navbar'
-import { Title } from '../components/title'
-import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar'
+import Hero from '@/components/hero'
+import FeaturesBlocks from '@/components/features-blocks'
+import Features from '@/components/features'
+import Footer from '@/components/ui/footer'
 
 export default function Home() {
-    document.body.style.backgroundColor = "#022837";
-
+    // document.body.style.backgroundColor = "#022837";
+  
     return (
       <>
-        <MainNavBar/>
+      <main className='grow'>
+        <Hero/>
+        <Features/>
+        <FeaturesBlocks />
+      </main>
+      <Footer/>
+        {/* <MainNavBar/>
         <Title/>
         <div className='mx-auto flex flex-col max-w-2xl'>
           <h2 className='text-white text-2xl font-bold'>About us</h2>
@@ -59,7 +66,7 @@ export default function Home() {
             </Avatar>
             <span className='text-white py-2'>Saez Pablo</span>
           </div>
-        </div>
+        </div> */}
       </>
     )
 }
