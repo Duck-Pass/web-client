@@ -27,21 +27,21 @@ export default function FeaturesBlocks() {
               <div className="relative flex flex-col items-center p-6 bg-white rounded shadow-xl">
                 <img className="w-32 h-32 p-1 -mt-1 mb-2 rounded-full" src={Duck1} alt="" />
                 <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">Pablo Saez</h4>
-                <p className="text-gray-600 text-center">Backend developer</p>
+                <p className="text-gray-600 text-center">Backend Developer</p>
               </div>
   
               {/* 2nd item */}
               <div className="relative flex flex-col items-center p-6 bg-white rounded shadow-xl">
                 <img className="w-32 h-32 p-1 -mt-1 mb-2 rounded-full" src={Duck2} alt="" />
                 <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">Alexis Martins</h4>
-                <p className="text-gray-600 text-center">Backend developer</p>
+                <p className="text-gray-600 text-center">Backend Developer</p>
               </div>
   
               {/* 3rd item */}
               <div className="relative flex flex-col items-center p-6 bg-white rounded shadow-xl">
                 <img className="w-32 h-32 p-1 -mt-1 mb-2 rounded-full" src={Duck3} alt="" />
                 <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">Hugo Ducommun</h4>
-                <p className="text-gray-600 text-center">Frontend developer</p>
+                <p className="text-gray-600 text-center">Frontend Developer</p>
               </div>
   
               {/* 4th item */}
@@ -49,7 +49,7 @@ export default function FeaturesBlocks() {
                 <img className="w-32 h-32 p-1 -mt-1 mb-2 rounded-full" src={Duck4} alt="" />
                 <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">Rayane Annen</h4>
                 <p className="text-gray-600 text-center flex flex-row">
-                  Frontend developer
+                  Frontend Developer
                 </p>
               </div>
             </div>
