@@ -3,12 +3,10 @@ import { DecryptParameters } from "../models/decrypt-parameters";
 import { CsprngArray } from "../types/csprng";
 
 export abstract class PrimitiveService {
-    argon2: (
+    pbkdf2: (
         password: string | Uint8Array,
         salt: string | Uint8Array,
         iterations: number,
-        memory: number,
-        parallelism: number,
     ) => Promise<Uint8Array>;
     hkdf: (
         ikm: Uint8Array,
