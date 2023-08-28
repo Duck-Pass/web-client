@@ -1,16 +1,16 @@
 import './App.css'
 import { Routes, Route, HashRouter } from 'react-router-dom';
 import Home from './pages/Home';
-import Header from './components/ui/header';
+import Register from './pages/Register'
 
 function App() {
 
   return (
     <>
-      <Header />
       <HashRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </HashRouter>
     </>
