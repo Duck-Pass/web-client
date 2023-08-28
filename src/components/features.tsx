@@ -44,7 +44,7 @@ export default function Features() {
           <div className="md:grid md:grid-cols-12 md:gap-6">
 
             {/* Content */}
-            <div className="max-w-xl md:max-w-none md:w-full mx-auto md:col-span-7 lg:col-span-6 md:mt-6" data-aos="fade-right">
+            <div className="text-center md:text-left max-w-xl md:max-w-none md:w-full mx-auto md:col-span-7 lg:col-span-6 md:mt-6" data-aos="fade-right">
               <div className="md:pr-4 lg:pr-12 xl:pr-16 mb-8">
                 <h3 className="h3 mb-3">Powerful features</h3>
                 <p className="text-xl text-gray-600">Manage and secure your passwords all in one place. Simply store your passwords in DuckPass and access them whenever you need, but not only !</p>
@@ -112,7 +112,7 @@ export default function Features() {
                     unmount={false}                     
                   >
                     <div className="relative inline-flex flex-col">
-                    <img className="md:max-w-none mx-auto rounded" src={PasswordBreachLogo} width={512} height="362" alt="Shield logo" />
+                      <img className="w-2/3 mx-auto rounded" src={PasswordBreachLogo} width={512} height="362" alt="Shield logo" />
                     </div>
                   </Transition>
                   {/* Item 2 */}
@@ -130,7 +130,7 @@ export default function Features() {
                     unmount={false}                     
                   >
                     <div className="relative inline-flex flex-col">
-                    <img className="md:max-w-none mx-auto rounded" src={MFAlogo} width={500} height="462" alt="MFA image" />
+                      <img className="w-2/3 mx-auto rounded" src={MFAlogo} width={500} height="462" alt="MFA image" />
                     </div>
                   </Transition>
                   {/* Item 3 */}
@@ -148,7 +148,7 @@ export default function Features() {
                     unmount={false}                     
                   >
                     <div className="relative inline-flex flex-col">
-                      <img className="md:max-w-none mx-auto rounded" src={RubberDuck} width={512} height="362" alt="Shield logo" />
+                      <img className="w-2/3 mx-auto rounded" src={RubberDuck} width={512} height="362" alt="Shield logo" />
                     </div>
                   </Transition>
                 </div>

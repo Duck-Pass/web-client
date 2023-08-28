@@ -2,6 +2,7 @@ import Duck1 from '../assets/pablo.jpg';
 import Duck2 from '../assets/alexis.png';
 import Duck3 from '../assets/hugo.jpg';
 import Duck4 from '../assets/rayane.jpg';
+import { Github, Linkedin } from 'lucide-react'
 
 export default function FeaturesBlocks() {
     return (
@@ -28,6 +29,9 @@ export default function FeaturesBlocks() {
                 <img className="w-32 h-32 p-1 -mt-1 mb-2 rounded-full" src={Duck1} alt="" />
                 <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">Pablo Saez</h4>
                 <p className="text-gray-600 text-center">Backend Developer</p>
+                <div className="flex flex-row w-full justify-center items-center mt-2 space-x-2">
+                  <a href="https://github.com/PabSaez" target="_blank" className="text-black hover:text-gray-400"><Github /></a>
+                </div>
               </div>
   
               {/* 2nd item */}
@@ -35,6 +39,9 @@ export default function FeaturesBlocks() {
                 <img className="w-32 h-32 p-1 -mt-1 mb-2 rounded-full" src={Duck2} alt="" />
                 <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">Alexis Martins</h4>
                 <p className="text-gray-600 text-center">Backend Developer</p>
+                <div className="flex flex-row w-full justify-center items-center mt-2 space-x-2">
+                  <a href="https://github.com/AlexisMts" target="_blank" className="text-black hover:text-gray-400"><Github /></a>
+                </div>
               </div>
   
               {/* 3rd item */}
@@ -42,6 +49,10 @@ export default function FeaturesBlocks() {
                 <img className="w-32 h-32 p-1 -mt-1 mb-2 rounded-full" src={Duck3} alt="" />
                 <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">Hugo Ducommun</h4>
                 <p className="text-gray-600 text-center">Frontend Developer</p>
+                <div className="flex flex-row w-full justify-center items-center mt-2 space-x-2">
+                  <a href="https://github.com/hugoducom" target="_blank" className="text-black hover:text-gray-400"><Github /></a>
+                  <a href="https://www.linkedin.com/in/hugo-ducommun-9504241aa/" target="_blank" className="text-black hover:text-gray-400"><Linkedin /></a>
+                </div>
               </div>
   
               {/* 4th item */}
@@ -51,6 +62,10 @@ export default function FeaturesBlocks() {
                 <p className="text-gray-600 text-center flex flex-row">
                   Frontend Developer
                 </p>
+                <div className="flex flex-row w-full justify-center items-center mt-2 space-x-2">
+                  <a href="https://github.com/azzen" target="_blank" className="text-black hover:text-gray-400"><Github /></a>
+                  <a href="https://www.linkedin.com/in/rayane-annen/" target="_blank" className="text-black hover:text-gray-400"><Linkedin /></a>
+                </div>
               </div>
             </div>
   
