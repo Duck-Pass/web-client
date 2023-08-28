@@ -15,13 +15,18 @@ export class SymmetricCryptoKey {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     meta: any;
 
-    constructor(key: Uint8Array) {
+    constructor(key: Uint8Array, authenticated = false) {
         this.key = key;
         if (key.byteLength === 64) {
             this.encKey = key.slice(0, 32);
             this.macKey = key.slice(32, 64);   
-        } else if (key.byteLength == 32) {
+        } else if (key.byteLength == 32 && !authenticated) {
             this.encKey = key;
+        } else if (key.byteLength == 32 && authenticated) {
+            this.encKey = key.slice(0, 16);
+            this.macKey = key.slice(16, 32);
+        } else {
+            throw new Error("Invalid key length.");
         }
 
         this.b64key = BufferUtils.fromBufferToBase64(this.key);
@@ -39,3 +44,4 @@ export class SymmetricCryptoKey {
 
 
 export type MasterKey = Opaque<SymmetricCryptoKey, 'MasterKey'>;
+export type UserKey = Opaque<SymmetricCryptoKey, 'UserKey'>;
