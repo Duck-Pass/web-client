@@ -1,5 +1,7 @@
 import { BufferUtils } from "../BufferUtils"
-import { Opaque } from "type-fest";
+import { Jsonify, Opaque } from "type-fest";
+import { SymmetricCryptoKey } from "./symmetric-crypto-key";
+import { EncryptionService } from "../abstractions/encryption.service";
 
 export class EncryptedString {
     encryptedString: EncString
@@ -9,18 +11,32 @@ export class EncryptedString {
     decryptedValue?: string
 
     constructor(
-        data: string,
-        iv: string,
+        data: string | EncString,
+        iv?: string,
         mac?: string,
     ) {
-        // AES-256-CBC with HMAC-SHA256 if MAC is present, AES-256-CBC otherwise
-        this.encryptedString = (iv + "|" + data) as EncString
-        this.data = data
-        this.iv = iv
-        
-        if (mac) {
-            this.encryptedString = (this.encryptedString + "|" + mac) as EncString
-            this.mac = mac
+        if (data && !iv && !mac) {
+            this.encryptedString = data as EncString
+            const {authenticated, encPieces} = EncryptedString.parseEncryptedString(this.encryptedString)
+            this.iv = encPieces[0]
+            this.data = encPieces[1]
+            if (authenticated) {
+                this.mac = encPieces[2]
+            }
+        } else {
+            this.encryptedString = (iv + "|" + data) as EncString
+            
+            if (!iv) {
+                throw new Error("Invalid encrypted string.")
+            }
+            
+            this.data = data
+            this.iv = iv
+            
+            if (mac) {
+                this.encryptedString = (this.encryptedString + "|" + mac) as EncString
+                this.mac = mac
+            }
         }
     }
 
@@ -37,6 +53,41 @@ export class EncryptedString {
 
     get dataBytes(): Uint8Array {
         return BufferUtils.fromBase64ToByteArray(this.data)
+    }
+
+    toJSON() {
+        return this.encryptedString
+    }
+
+    static fromJSON(obj: Jsonify<EncryptedString>): EncryptedString | null {
+        if (obj == null) {
+            return null
+        }
+        return new EncryptedString(obj)
+    }
+
+    static parseEncryptedString(s: EncString): {authenticated: boolean, encPieces: string[]} {
+        let authenticated: boolean;
+        const encPieces = s.split("|")
+        if (encPieces.length === 2) {
+            authenticated = false
+        } else if (encPieces.length === 3) {
+            authenticated = true
+        } else {
+            throw new Error("Invalid encrypted string.")
+        }
+        return {
+            authenticated,
+            encPieces
+        }
+    }
+
+    async decrypt(key: SymmetricCryptoKey, svc: EncryptionService): Promise<string> {
+        if (this.decryptedValue) {
+            return this.decryptedValue
+        }
+        this.decryptedValue = await svc.decrypt(this, key)
+        return this.decryptedValue
     }
 }
 
