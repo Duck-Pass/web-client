@@ -2,6 +2,7 @@ import Header from '@/components/vault/header'
 import { DataTable } from '@/components/ui/data-table'
 import { columns } from "@/components/vault/vault-column"
 import Footer from '@/components/ui/footer'
+import { Separator } from "@/components/ui/separator"
 
 // TO DELETE AFTER API IMPLEMENTATION
 import mockData from '@/assets/MOCK_DATA.json'
@@ -15,6 +16,11 @@ export default function Vault() {
     <>
       <Header />
       <main className="container">
+        <div className="mb-4">
+          <p className="text-2xl font-semibold leading-none tracking-tight mb-1">My vault</p>
+          <p className="text-sm text-muted-foreground mb-2">Your personal vault is entierely encrypted. You are the only one able to access to it.</p>
+          <Separator />
+        </div>
         <DataTable columns={columns} data={data} />
       </main>
       <Footer/>
