@@ -46,6 +46,11 @@ export abstract class PrimitiveService {
     aesDecrypt: (
         parameters: DecryptParameters<string>
     ) => Promise<string>;
+    aesDecryptToBytes: (
+        data: Uint8Array,
+        iv: Uint8Array,
+        key: Uint8Array
+    ) => Promise<Uint8Array>;
     aesDecryptParameters: (
         data: string,
         iv: string,

@@ -151,6 +151,12 @@ export class WebCryptoPrimitivesService implements PrimitiveService {
         return new Uint8Array(buffer);
     }
 
+    async aesDecryptToBytes(data: Uint8Array, iv: Uint8Array, key: Uint8Array): Promise<Uint8Array> {
+        const impKey = await this.subtle.importKey('raw', key, { name: 'AES-CBC' }, false, ['decrypt']);
+        const buffer = await this.subtle.decrypt({ name: 'AES-CBC', iv: iv }, impKey, data);
+        return new Uint8Array(buffer);
+    }
+
     aesDecrypt(parameters: DecryptParameters<string>) {
         const dataBuffer = forge.util.createBuffer(parameters.data);
         const decipher = forge.cipher.createDecipher('AES-CBC', parameters.encKey);

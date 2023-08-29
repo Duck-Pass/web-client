@@ -63,6 +63,28 @@ export class WebCryptoEncryptionService implements EncryptionService {
         return await this.primitiveService.aesDecrypt(params);
     }
 
+    async decryptToBytes(encrypted: EncryptedString, key: SymmetricCryptoKey): Promise<Uint8Array | undefined> {
+        if (key.macKey != null && encrypted.macBytes != null) {
+            const macData = new Uint8Array(encrypted.ivBytes.byteLength + encrypted.dataBytes.byteLength);
+            macData.set(new Uint8Array(encrypted.ivBytes), 0);
+            macData.set(new Uint8Array(encrypted.dataBytes), encrypted.ivBytes.byteLength);
+            const computedMac = await this.primitiveService.hmac(macData, key.macKey);
+            const macsMatch = await this.primitiveService.compareBytes(computedMac, encrypted.macBytes);
+            if (!macsMatch) {
+                throw new Error("MACs are not equal.");
+            }
+
+            const result = await this.primitiveService.aesDecryptToBytes(
+                encrypted.dataBytes,
+                encrypted.ivBytes,
+                key.encKey
+            )
+
+            return result;
+        }
+
+    }
+
     private async aesEncrypt(data: Uint8Array, key: SymmetricCryptoKey): Promise<EncryptedObject> {
         const obj = new EncryptedObject();
 
