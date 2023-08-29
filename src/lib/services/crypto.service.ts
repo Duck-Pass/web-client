@@ -31,6 +31,20 @@ export class CryptoService implements CryptoServiceAbstract {
         return await this.makeProtectedSymmetricKey(masterKey, newUserKey)
     }
 
+    async decryptUserKey(
+        masterKey: MasterKey,
+        userKey: EncryptedString,
+    ): Promise<UserKey> {
+        const newKey = await this.stretchMasterKey(masterKey);
+        const decUserKey = await this.encryptionService.decryptToBytes(userKey, newKey) ?? new Uint8Array(0);
+
+        if (decUserKey.length === 0) {
+            throw new Error("Decrypted key is null")
+        }
+
+        return new SymmetricCryptoKey(decUserKey) as UserKey;
+    }
+
     private async makeProtectedSymmetricKey<T extends SymmetricCryptoKey>(
         encKey: SymmetricCryptoKey,
         newSymkey: Uint8Array,
