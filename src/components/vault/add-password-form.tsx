@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Progress } from "@/components/ui/progress"
+import PasswordStrengthMeter from "./password-strength-meter";
 
 const formSchema = z.object({
   name: z.string().trim().min(5),
@@ -23,6 +23,7 @@ const formSchema = z.object({
 })
 
 export function AddPasswordForm() {
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,7 +62,7 @@ export function AddPasswordForm() {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="john.doe@gmail.com" {...field} />
+                <Input placeholder="john.doe@gmail.com" autoComplete="username" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -74,9 +75,9 @@ export function AddPasswordForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input type="password" autoComplete="current-password" {...field} />
               </FormControl>
-              <Progress value={33} />
+              <PasswordStrengthMeter password={form.getValues().password} />
               <FormMessage />
             </FormItem>
           )}
