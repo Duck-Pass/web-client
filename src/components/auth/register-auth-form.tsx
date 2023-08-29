@@ -23,6 +23,14 @@ const formSchema = z.object({
   verifyPassword: z.string().min(8, {
     message: "Password must be at least 8 characters."
   }),
+}).superRefine(({password, verifyPassword}, ctx) => {
+  if (password !== verifyPassword) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "The password did not match",
+      path: ["verifyPassword"],
+    })
+  }
 })
 
 export function RegisterAuthForm() {
