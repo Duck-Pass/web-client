@@ -36,7 +36,9 @@ const formSchema = z.object({
   }
 })
 
-export function RegisterAuthForm() {
+export function RegisterAuthForm(
+  {handleSubmit, handleError}: {handleSubmit: (submitted: boolean) => void, handleError: (error: string) => void}
+) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,12 +59,28 @@ export function RegisterAuthForm() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [_, encryptedKey] = await cryptoService.makeUserKey(masterKey1)
     const payload = {
+      username: values.email,
       email: values.email,
       key_hash: hashMasterKey1,
       key_hash_conf: hashMasterKey2,
-      protectedSymmetricKey: encryptedKey.toJSON(),
+      symmetric_key_encrypted: encryptedKey.toJSON(),
     }
-    console.log(payload)
+    
+    const response = await fetch("https://api-staging.duckpass.ch/register/?" + new URLSearchParams(payload), {
+      method: "POST",
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      if (data.message == "User created successfully") {
+        handleSubmit(true)
+        handleError("")
+      }
+    } else {
+      const data = await response.json()
+      handleError("Your account registration failed, detail: " + data.detail)
+      handleSubmit(true)
+    }
 
   }
 
