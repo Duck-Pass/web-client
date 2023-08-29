@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import Register from './pages/Register'
 import Login from './pages/Login'
 import Vault from './pages/Vault'
-
+import AccountVerified from './pages/AccountVerified';
 function App() {
 
   return (
@@ -13,6 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/account-verified" element={<AccountVerified />} />
           <Route path="/login" element={<Login />} />
           <Route path="/vault" element={<Vault />} />
         </Routes>
