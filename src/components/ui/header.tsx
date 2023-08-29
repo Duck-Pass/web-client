@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import Logo from '../../assets/ducky-round.png'
 import { Link } from 'react-router-dom'
 
+import MobileHeader from '@/components/ui/mobile-header'
+
 export default function Header() {
 
   const [top, setTop] = useState<boolean>(true)
@@ -26,7 +28,9 @@ export default function Header() {
           {/* Site branding */}
           <div className="shrink-0 mr-4">
             {/* <Logo /> */}
-            <img className="w-12 h-12" src={Logo} alt="DuckPass Logo" />
+            <Link to="/">
+              <img className="w-12 h-12" src={Logo} alt="DuckPass Logo" />
+            </Link>
           </div>
 
           {/* Desktop navigation */}
@@ -34,7 +38,7 @@ export default function Header() {
             {/* Desktop sign in links */}
             <ul className="flex grow justify-end flex-wrap items-center">
               <li>
-                <a href="/signin" className="font-medium text-gray-600 hover:text-gray-900 px-5 py-3 flex items-center transition duration-150 ease-in-out">Sign in</a>
+                <Link to="/login" className="font-medium text-gray-600 hover:text-gray-900 px-5 py-3 flex items-center transition duration-150 ease-in-out">Sign in</Link>
               </li>
               <li>
                 <Link to="/register" className="btn-sm text-gray-200 bg-gray-900 hover:bg-gray-800 ml-3">
@@ -48,7 +52,7 @@ export default function Header() {
 
           </nav>
 
-          {/* <MobileMenu /> */}
+          <MobileHeader />
 
         </div>
       </div>

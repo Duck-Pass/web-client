@@ -8,9 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import Logo from "@/assets/ducky-round.png"
-import { RegisterAuthForm } from "@/components/auth/register-auth-form"
+import { LoginAuthForm } from "@/components/auth/login-auth-form"
 
-export default function Register() {
+export default function LoginPage() {
   return (
     <>
       <div className="container h-screen flex flex-col items-center justify-center">
@@ -19,16 +19,16 @@ export default function Register() {
         </Link>
         <Card className="w-[350px]">
           <CardHeader>
-            <CardTitle>Register</CardTitle>
-            <CardDescription>Create your account to access your personnal vault.</CardDescription>
+            <CardTitle>Log In</CardTitle>
+            <CardDescription>By logging in you will access to your personal vault.</CardDescription>
           </CardHeader>
           <CardContent>
-            <RegisterAuthForm />
+            <LoginAuthForm />
           </CardContent>
           <CardFooter className="flex flex-col">
             <p className="text-xs text-center text-gray-700">
-              Already have an account? {" "}
-              <Link to="/login" className=" text-blue-600 hover:underline">Sign in</Link>
+              Don't have an account? {" "}
+              <Link to="/register" className=" text-blue-600 hover:underline">Sign up</Link>
             </p>
           </CardFooter>
         </Card>
