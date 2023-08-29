@@ -29,6 +29,9 @@ export default function LoginPage() {
             <p className="text-xs text-center text-gray-700">
               Don't have an account? {" "}
               <Link to="/register" className=" text-blue-600 hover:underline">Sign up</Link>
+              <br />
+              Password forgotten? {" "}
+              <Link to="/reset-password" className=" text-blue-600 hover:underline">Click here</Link>!
             </p>
           </CardFooter>
         </Card>
