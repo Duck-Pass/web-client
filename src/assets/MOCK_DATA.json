@@ -16,7 +16,8 @@
         "password": "nO5,cyf*%T$r",
         "authKey": "95581",
         "totp": "2",
-        "note": "expedite holistic web-readiness"
+        "note": "expedite holistic web-readiness",
+        "favorite": true
     },
     {
         "id": 3,
@@ -25,7 +26,8 @@
         "password": "mA1(Pn\\XZn9vY)nY",
         "authKey": "528",
         "totp": "2221",
-        "note": "revolutionize innovative methodologies"
+        "note": "revolutionize innovative methodologies",
+        "favorite": true
     },
     {
         "id": 4,
@@ -34,7 +36,8 @@
         "password": "cW8))_/#S+7f<b",
         "authKey": "2",
         "totp": "943",
-        "note": "aggregate proactive infrastructures"
+        "note": "aggregate proactive infrastructures",
+        "favorite": true
     },
     {
         "id": 5,
@@ -43,7 +46,8 @@
         "password": "dO7(6msFm",
         "authKey": "52",
         "totp": "95905",
-        "note": "evolve granular infrastructures"
+        "note": "evolve granular infrastructures",
+        "favorite": true
     },
     {
         "id": 6,

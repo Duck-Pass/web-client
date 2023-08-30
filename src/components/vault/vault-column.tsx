@@ -27,7 +27,7 @@ export type Credential = {
   authKey: string
   totp: string
   note: string
-  favorite: boolean
+  favorite?: boolean
 }
 
 export const columns: ColumnDef<Credential>[] = [
