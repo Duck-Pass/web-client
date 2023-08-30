@@ -59,7 +59,6 @@ export function RegisterAuthForm(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [_, encryptedKey] = await cryptoService.makeUserKey(masterKey1)
     const payload = {
-      username: values.email,
       email: values.email,
       key_hash: hashMasterKey1,
       key_hash_conf: hashMasterKey2,
