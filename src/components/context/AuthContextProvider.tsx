@@ -76,11 +76,7 @@ export const AuthContextProvider = ({children} : Props)  => {
                 symmetric_key: userKey.toJSON(),
             }));
 
-            const myCustomVault = "this is a very important test"
-            const encryptedVault = await encryptionService.encrypt(myCustomVault, userKey);
-            console.log(await encryptionService.decrypt(encryptedVault, userKey));
-
-            if (data.vault !== "") {
+            if (data.vault) {
                 const encryptedVault = new EncryptedString(data.vault as EncString);
                 const vault = await encryptionService.decrypt(encryptedVault, userKey);
                 localStorage.setItem("vault", JSON.stringify(vault));
