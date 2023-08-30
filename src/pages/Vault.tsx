@@ -1,5 +1,5 @@
 import Header from '@/components/vault/header'
-import { DataTable } from '@/components/ui/data-table'
+import { VaultDataTable } from '@/components/vault/vault-data-table'
 import { columns } from "@/components/vault/vault-column"
 import Footer from '@/components/ui/footer'
 import { Separator } from "@/components/ui/separator"
@@ -21,7 +21,7 @@ export default function Vault() {
           <p className="text-sm text-muted-foreground mb-2">Your personal vault is entierely encrypted. You are the only one able to access to it.</p>
           <Separator />
         </div>
-        <DataTable columns={columns} data={data} />
+        <VaultDataTable columns={columns} data={data} />
       </main>
       <Footer/>
     </>
