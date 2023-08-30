@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal, User, Lock, Clock, Trash, Pen } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, User, Lock, Clock, Trash, Pen, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import copy from "copy-to-clipboard"
 import {
@@ -27,6 +27,7 @@ export type Credential = {
   authKey: string
   totp: string
   note: string
+  favorite: boolean
 }
 
 export const columns: ColumnDef<Credential>[] = [
@@ -67,6 +68,25 @@ export const columns: ColumnDef<Credential>[] = [
   {
     accessorKey: "note",
     header: "Note",
+  },
+  {
+    accessorKey: "favorite",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Favorite
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const fav = row.getValue("favorite")
+      
+      return <Star className="mx-4 font-medium hover:cursor-pointer" fill={`${fav ? 'primary' : 'none'}`} />
+    },
   },
   {
     id: "actions",
