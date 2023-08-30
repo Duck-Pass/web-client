@@ -16,7 +16,7 @@ export default function Enable2FAModal() {
             <div className="p-4 rounded-md border flex flex-col space-y-2">
               <p className="text-2xl font-semibold leading-none tracking-tight">Enable 2FA authentication</p>
               <DialogTrigger asChild className="w-full">
-                <Button className="w-full bg-green-500 hover:bg-green-400">Enable 2FA</Button>
+                <Button className="w-full">Enable 2FA</Button>
               </DialogTrigger>
             </div>
           <DialogContent className="sm:max-w-[425px]">

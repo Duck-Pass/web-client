@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/table"
 
 import { Button } from "@/components/ui/button"
+import BreachesModal from "@/components/vault/breaches/breaches-modal"
 import { Input } from "@/components/ui/input"
 import AddPasswordModal from "@/components/vault/add-password-modal"
 import { ArrowLeft, ArrowRight } from 'lucide-react'
@@ -32,7 +33,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-export function DataTable<TData, TValue>({
+export function VaultDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -77,7 +78,7 @@ export function DataTable<TData, TValue>({
           }
           className="w-full"
         />
-        <Button className="w-full" type="submit">Check for breaches</Button>
+        <BreachesModal />
         <AddPasswordModal />
       </div>
       <div className="md:col-span-2">

@@ -6,6 +6,8 @@ import Login from './pages/Login'
 import Vault from './pages/Vault'
 import AccountVerified from './pages/AccountVerified';
 import Profile from './pages/Profile'
+import PasswordReset from './pages/PasswordReset';
+import Page404 from './pages/Page404'
 
 function App() {
 
@@ -16,9 +18,11 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/account-verified" element={<AccountVerified />} />
+          <Route path="/reset-password" element={<PasswordReset />} />
           <Route path="/login" element={<Login />} />
           <Route path="/vault" element={<Vault />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="*" element={<Page404 />} />
         </Routes>
       </HashRouter>
     </>
