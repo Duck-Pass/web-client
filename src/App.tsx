@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Register from './pages/Register'
 import Login from './pages/Login'
 import Vault from './pages/Vault'
+import AccountVerified from './pages/AccountVerified';
 import Profile from './pages/Profile'
 import { AuthContextProvider } from './components/context/AuthContextProvider';
 import PasswordReset from './pages/PasswordReset';
@@ -15,16 +16,17 @@ function App() {
     <>
       <HashRouter>
         <AuthContextProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/reset-password" element={<PasswordReset />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/vault" element={<Vault />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="*" element={<Page404 />} />
-          </Routes>
-      </AuthContextProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/account-verified" element={<AccountVerified />} />
+          <Route path="/reset-password" element={<PasswordReset />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/vault" element={<Vault />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="*" element={<Page404 />} />
+        </Routes>
+        </AuthContextProvider>
       </HashRouter>
     </>
 )

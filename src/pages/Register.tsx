@@ -9,8 +9,13 @@ import {
 } from "@/components/ui/card"
 import Logo from "@/assets/ducky-round.png"
 import { RegisterAuthForm } from "@/components/auth/register-auth-form"
+import { useState } from "react"
 
 export default function Register() {
+
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState("")
+
   return (
     <>
       <div className="container h-screen flex flex-col items-center justify-center">
@@ -20,10 +25,11 @@ export default function Register() {
         <Card className="w-[350px]">
           <CardHeader>
             <CardTitle>Register</CardTitle>
-            <CardDescription>Create your account to access your personnal vault.</CardDescription>
+            <CardDescription>{submitted ? (error ? 'There is an error with your registration' : 'Congratulation! Your account has been created!') : 'Create your account to access your personnal vault.'}</CardDescription>
           </CardHeader>
           <CardContent>
-            <RegisterAuthForm />
+            {submitted ? error ? <p className="text-sm text-left">{error}</p> :  <p className="text-sm text-left">Your account has been created! Check your emails!</p>
+                       : <RegisterAuthForm handleSubmit={(submitted: boolean) => setSubmitted(submitted)} handleError={(error: string) => setError(error)} />}
           </CardContent>
           <CardFooter className="flex flex-col">
             <p className="text-xs text-center text-gray-700">
