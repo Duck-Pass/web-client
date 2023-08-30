@@ -50,8 +50,12 @@ export const AuthContextProvider = ({children} : Props)  => {
             // we should use httpOnly cookies in a future improvement
             localStorage.setItem("token", token.access_token);
             setError("");
-        } else {
+        } else if (responseToken.status === 404 || responseToken.status === 401) {
             setError("Invalid credentials");
+            return;
+        } else if (responseToken.status >= 500) {
+            setError("There was an error on the server. Please try again later.");
+            return;
         }
 
         const response = await fetch("https://api-staging.duckpass.ch/get_user", {
@@ -72,7 +76,11 @@ export const AuthContextProvider = ({children} : Props)  => {
                 symmetric_key: userKey.toJSON(),
             }));
 
-            if (data.vaultPassword !== "") {
+            const myCustomVault = "this is a very important test"
+            const encryptedVault = await encryptionService.encrypt(myCustomVault, userKey);
+            console.log(await encryptionService.decrypt(encryptedVault, userKey));
+
+            if (data.vault !== "") {
                 const encryptedVault = new EncryptedString(data.vault as EncString);
                 const vault = await encryptionService.decrypt(encryptedVault, userKey);
                 localStorage.setItem("vault", JSON.stringify(vault));
