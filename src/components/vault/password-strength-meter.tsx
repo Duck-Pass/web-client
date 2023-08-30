@@ -21,7 +21,7 @@ export default function PasswordStrengthMeter({ password }: PasswordProps) {
     }
 
     const getSuggestion = (suggestions: string[]) => {
-        return suggestions.map(sugg => <li>{sugg}</li>)
+        return suggestions.map(sugg => <p key={sugg}>{sugg}</p>)
     }
 
     useEffect(() => {
@@ -73,9 +73,9 @@ export default function PasswordStrengthMeter({ password }: PasswordProps) {
                 <Info className="col-span-1 hover:cursor-pointer justify-self-center" />
               </TooltipTrigger>
               <TooltipContent>
-                <ul>
+                <span>
                   {result.feedback.suggestions.length > 0 ? getSuggestion(result.feedback.suggestions) : "No advice!"}
-                </ul>
+                </span>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

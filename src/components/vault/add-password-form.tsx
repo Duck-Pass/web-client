@@ -11,8 +11,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { Input } from "@/components/ui/input"
 import PasswordStrengthMeter from "./password-strength-meter";
+import { Copy } from "lucide-react"
+import PasswordGeneratorPopover from "./password-generator-popover";
 
 const formSchema = z.object({
   name: z.string().trim().min(5),
@@ -75,7 +82,18 @@ export function AddPasswordForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
+              <div className="flex w-full items-center space-x-2">
                 <Input type="password" autoComplete="current-password" {...field} />
+                <PasswordGeneratorPopover />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button type="button" onClick={() => navigator.clipboard.writeText(form.getValues().password)}>
+                      <Copy />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto">Copied!</PopoverContent>
+                </Popover>
+              </div>
               </FormControl>
               <PasswordStrengthMeter password={form.getValues().password} />
               <FormMessage />
