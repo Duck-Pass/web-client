@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Progress } from "@/components/ui/progress"
+import PasswordStrengthMeter from "./password-strength-meter";
 import { Credential } from "./vault-column";
 
 export type PasswordModalProps = {
@@ -82,7 +82,7 @@ export function EditPasswordForm(props: PasswordModalProps) {
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
-              <Progress value={33} />
+              <PasswordStrengthMeter password={form.getValues().password} />
               <FormMessage />
             </FormItem>
           )}

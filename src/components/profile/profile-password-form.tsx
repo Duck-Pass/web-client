@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Progress } from "@/components/ui/progress"
+import PasswordStrengthMeter from "@/components/vault/password-strength-meter";
 
 const formSchema = z.object({
   oldPassword: z.string().min(8, {
@@ -65,10 +65,7 @@ export default function ProfilePasswordForm() {
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
-              <div className="grid grid-cols-4 items-center">
-                <p className="col-span-1 text-sm text-muted-foreground">strength:</p>
-                <Progress className="col-span-3" value={33} />
-              </div>
+              <PasswordStrengthMeter password={form.getValues().newPassword} />
               <FormMessage />
             </FormItem>
           )}
