@@ -6,7 +6,8 @@
         "password": "qL6.B/gbj",
         "authKey": "477",
         "totp": "33749",
-        "note": "integrate innovative web-readiness"
+        "note": "integrate innovative web-readiness",
+        "favorite": true
     },
     {
         "id": 2,
