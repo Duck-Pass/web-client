@@ -2,6 +2,7 @@ import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
+  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -22,9 +23,9 @@ import {
 } from "@/components/ui/table"
 
 import { Button } from "@/components/ui/button"
+import BreachesModal from "@/components/vault/breaches/breaches-modal"
 import { Input } from "@/components/ui/input"
 import AddPasswordModal from "@/components/vault/add-password-modal"
-
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 
 interface DataTableProps<TData, TValue> {
@@ -32,14 +33,19 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-export function DataTable<TData, TValue>({
+export function VaultDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({
+    id: false,
+    password: false,
+    authKey: false,
+    totp: false,
+    note: false,
+  })
 
   const table = useReactTable({
     data,
@@ -50,9 +56,11 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
       columnFilters,
+      columnVisibility,
     },
   })
 
@@ -70,7 +78,7 @@ export function DataTable<TData, TValue>({
           }
           className="w-full"
         />
-        <Button className="w-full" type="submit">Check for breaches</Button>
+        <BreachesModal />
         <AddPasswordModal />
       </div>
       <div className="md:col-span-2">

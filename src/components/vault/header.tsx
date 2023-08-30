@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { LogOut } from 'lucide-react'
+import { Button } from "@/components/ui/button"
 
 export default function Header() {
   return (
@@ -18,10 +19,13 @@ export default function Header() {
         <div className="flex items-center justify-between h-16 md:h-20">
 
           {/* Site branding */}
-          <div className="shrink-0 mr-4">
+          <div className="flex items-center shrink-0 mr- space-x-4">
             <Link to="/">
               {/* <Logo /> */}
               <img className="w-12 h-12" src={Logo} alt="DuckPass Logo" />
+            </Link>
+            <Link to="/vault">
+              <Button variant="ghost" className="text-white font-semibold hover:text-gray-800 hover:cursor-pointer">Vault</Button>
             </Link>
           </div>
 

@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod"
 
 import { Button } from "@/components/ui/button"
-import PasswordStrengthMeter from "@/components/vault/password-strength-meter"
 import {
   Form,
   FormControl,
@@ -13,26 +12,31 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import PasswordStrengthMeter from "./password-strength-meter";
+import { Credential } from "./vault-column";
+
+export type PasswordModalProps = {
+    cred: Credential
+}
 
 const formSchema = z.object({
-  email: z.string().email({
-    message: "Invalid email address"
-  }).trim(),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters."
-  }),
-  verifyPassword: z.string().min(8, {
-    message: "Password must be at least 8 characters."
-  }),
+  name: z.string().trim().min(5),
+  username: z.string().trim(),
+  password: z.string().min(8),
+  note: z.string().optional(),
+  totp: z.string().optional(),
 })
 
-export function RegisterAuthForm() {
+
+export function EditPasswordForm(props: PasswordModalProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      verifyPassword: "",
+        name: props.cred.name,
+        username: props.cred.username,
+        password: props.cred.password,
+        note: props.cred.note,
+        totp: props.cred.totp,
     },
   })
   
@@ -45,12 +49,25 @@ export function RegisterAuthForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         <FormField
           control={form.control}
-          name="email"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="john@doe.ch" {...field} />
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="john.doe@gmail.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -72,19 +89,32 @@ export function RegisterAuthForm() {
         />
         <FormField
           control={form.control}
-          name="verifyPassword"
+          name="note"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Verify password</FormLabel>
+              <FormLabel>Note</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input placeholder="Optional" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="totp"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>TOTP key</FormLabel>
+              <FormControl>
+                <Input placeholder="Optional" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <div className="flex flex-col w-full mt-2">
-          <Button type="submit">Create my account</Button>
+          <Button type="submit">Edit password</Button>
         </div>
       </form>
     </Form>

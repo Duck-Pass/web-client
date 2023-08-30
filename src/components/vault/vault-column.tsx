@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal, User, Lock, Clock, Trash } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, User, Lock, Clock, Trash, Pen, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import copy from "copy-to-clipboard"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,6 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { EditPasswordForm } from "./edit-password-form"
 
 export type Credential = {
   id: number
@@ -18,6 +27,7 @@ export type Credential = {
   authKey: string
   totp: string
   note: string
+  favorite?: boolean
 }
 
 export const columns: ColumnDef<Credential>[] = [
@@ -60,46 +70,83 @@ export const columns: ColumnDef<Credential>[] = [
     header: "Note",
   },
   {
+    accessorKey: "favorite",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Favorite
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const fav = row.getValue("favorite")
+      
+      return <Star className="mx-4 font-medium hover:cursor-pointer" fill={`${fav ? 'primary' : 'none'}`} />
+    },
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       const cred = row.original
- 
+
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem className="hover:cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(cred.username)}
-            >
-              <User className="text-gray-500 mr-2 w-4" />
-              Copy username
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(cred.password)}
-            >
-              <Lock className="text-gray-500 mr-2 w-4" />
-              Copy password
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(cred.totp)}
-            >
-              <Clock className="text-gray-500 mr-2 w-4" />
-              Copy TOTP
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="hover:cursor-pointer">
-              <Trash className="text-red-500 mr-2 w-4" />
-              <span className="text-red-500">Delete</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <Dialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem className="hover:cursor-pointer"
+                  onClick={() => copy(cred.totp)}
+                >
+                  <DialogTrigger asChild className="w-full p-0">
+                    <Button variant="ghost"><Pen className="text-gray-500 mr-2 w-4" />Edit</Button>
+                  </DialogTrigger>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="hover:cursor-pointer"
+                  onClick={() => copy(cred.username)}
+                >
+                  <User className="text-gray-500 mr-2 w-4" />
+                  Copy username
+                </DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer"
+                  onClick={() => copy(cred.password)}
+                >
+                  <Lock className="text-gray-500 mr-2 w-4" />
+                  Copy password
+                </DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer"
+                  onClick={() => copy(cred.totp)}
+                >
+                  <Clock className="text-gray-500 mr-2 w-4" />
+                  Copy TOTP
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  <Trash className="text-red-500 mr-2 w-4" />
+                  <span className="text-red-500">Delete</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Edit your password</DialogTitle>
+              </DialogHeader>
+              <EditPasswordForm cred={cred} />
+            </DialogContent>
+          </Dialog>
+        </>
       )
     },
   },
