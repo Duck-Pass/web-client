@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod"
 
 import { Button } from "@/components/ui/button"
+import PasswordStrengthMeter from "@/components/vault/password-strength-meter"
 import {
   Form,
   FormControl,
@@ -108,6 +109,7 @@ export function RegisterAuthForm(
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
+              <PasswordStrengthMeter password={form.getValues().password} />
               <FormMessage />
             </FormItem>
           )}

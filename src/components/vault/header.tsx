@@ -37,7 +37,11 @@ export default function Header() {
               <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="hover:cursor-pointer">Profile</DropdownMenuItem>
+                <Link to="/profile">
+                  <DropdownMenuItem className="hover:cursor-pointer">
+                    Profile
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="hover:cursor-pointer">
                   <LogOut className="text-red-500 w-4 mr-2" />
