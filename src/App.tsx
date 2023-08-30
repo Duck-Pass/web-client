@@ -5,20 +5,22 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import Vault from './pages/Vault'
 import Profile from './pages/Profile'
-
+import { AuthContextProvider } from './components/context/AuthContextProvider';
 function App() {
 
   return (
     <>
-      <HashRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/vault" element={<Vault />} />
-          <Route path="/profile" element={<Profile />} />
-        </Routes>
-      </HashRouter>
+        <HashRouter>
+        <AuthContextProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/vault" element={<Vault />} />
+            <Route path="/profile" element={<Profile />} />
+          </Routes>
+        </AuthContextProvider>
+        </HashRouter>
     </>
 )
 }

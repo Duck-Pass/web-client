@@ -9,8 +9,14 @@ import {
 } from "@/components/ui/card"
 import Logo from "@/assets/ducky-round.png"
 import { LoginAuthForm } from "@/components/auth/login-auth-form"
+import { useContext } from "react"
+import { AuthContext } from "@/components/context/AuthContext"
+
 
 export default function LoginPage() {
+
+  const {error} = useContext(AuthContext);
+
   return (
     <>
       <div className="container h-screen flex flex-col items-center justify-center">
@@ -20,7 +26,7 @@ export default function LoginPage() {
         <Card className="w-[350px]">
           <CardHeader>
             <CardTitle>Log In</CardTitle>
-            <CardDescription>By logging in you will access to your personal vault.</CardDescription>
+            <CardDescription>{error ? <span className="text-red-500">{error}</span> : "By logging in you will access to your personal vault." }</CardDescription>
           </CardHeader>
           <CardContent>
             <LoginAuthForm />

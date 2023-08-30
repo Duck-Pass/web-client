@@ -12,6 +12,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useContext } from "react";
+import { AuthContext } from "@/components/context/AuthContext";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -31,11 +33,14 @@ export function LoginAuthForm() {
     },
   })
   
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  const { login } = useContext(AuthContext);
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    login({username: values.email, password: values.password})
   }
 
   return (
+    <>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         <FormField
@@ -69,5 +74,6 @@ export function LoginAuthForm() {
         </div>
       </form>
     </Form>
+    </>
   )
 }
