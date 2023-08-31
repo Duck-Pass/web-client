@@ -8,6 +8,7 @@ import AccountVerified from './pages/AccountVerified';
 import Profile from './pages/Profile'
 import { AuthContextProvider } from './components/context/AuthContextProvider';
 import PasswordReset from './pages/PasswordReset';
+import Login2FA from './pages/Login2FA';
 import Page404 from './pages/Page404'
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/account-verified" element={<AccountVerified />} />
           <Route path="/reset-password" element={<PasswordReset />} />
+          <Route path="/2fa-login" element={<Login2FA />} />
           <Route path="/login" element={<Login />} />
           <Route path="/vault" element={<Vault />} />
           <Route path="/profile" element={<Profile />} />
