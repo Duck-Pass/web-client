@@ -12,18 +12,38 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useEffect } from "react"
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "@/components/context/AuthContext";
 
 const formSchema = z.object({
-  totp: z.number().min(100000).max(999999),
+  totp: z.coerce.number().min(100000).max(999999),
 })
 
-export function Login2FAAuthForm() {
+export function Login2FAAuthForm({username, password} : {username?: string, password?: string}) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!username || !password) {
+      navigate("/login");
+    }
+    return;
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
+  const { login } = useContext(AuthContext);
   
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    if (username && password && values.totp) {
+      login({
+        username: username,
+        password: password,
+        totp: values.totp,
+      })
+    }
   }
 
   return (

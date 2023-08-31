@@ -21,7 +21,7 @@ const formSchema = z.object({
   }).trim(),
   password: z.string().min(8, {
     message: "Password must be at least 8 characters."
-  })
+  }),
 })
 
 export function LoginAuthForm() {
@@ -31,8 +31,7 @@ export function LoginAuthForm() {
       email: "",
       password: "",
     },
-  })
-  
+  })  
   const { login } = useContext(AuthContext);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
