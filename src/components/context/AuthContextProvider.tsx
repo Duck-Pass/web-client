@@ -17,41 +17,68 @@ export const AuthContextProvider = ({children} : Props)  => {
     })
 
     const [error, setError] = useState("");
+    const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+    const [authKey, setAuthKey] = useState({authKey:"", url:""});
 
     const navigate = useNavigate();
 
-    const login = async (payload: {username: string, password: string}) => {
+    const login = async (payload: {username: string, password: string, totp?: number}) => {
         const primitives = new WebCryptoPrimitivesService(window);
         const encryptionService = new WebCryptoEncryptionService(primitives);
         const cryptoService = new CryptoService(primitives, encryptionService);
         const masterKey = await cryptoService.makeMasterKey(payload.password, payload.username);
         const hashMasterKey = await cryptoService.hashMasterKey(payload.password, masterKey, 1);
 
-        const credentials = {
+        setError("");
+        const authUrl = payload.totp ? "https://api-staging.duckpass.ch/check_two_factor_auth" : "https://api-staging.duckpass.ch/token";
+
+        let credentials:{username: string, password: string, totp_code?: string} = {
             username: payload.username,
             password: hashMasterKey,
         }
 
-        const responseToken = await fetch("https://api-staging.duckpass.ch/token", {
+        if (payload.totp) {
+            credentials.totp_code = payload.totp.toString();
+        }
+
+        const responseToken = await fetch(authUrl, {
             method: "POST",
-            body: new URLSearchParams(credentials),
+            headers: {
+                "Content-Type": payload.totp ? "application/json" : "application/x-www-form-urlencoded",
+            },
+            body: payload.totp ? JSON.stringify(credentials) : new URLSearchParams(credentials),
         }).catch((error) => {
             setError(error.message)
         });
+
 
         if (!responseToken) {
             return;
         }
 
-        const token = await responseToken.json();
+        const tokenData = await responseToken.json();
 
-        if (responseToken.ok) {
+        if (responseToken.ok && tokenData?.detail !== "Two-factor authentication is enabled") {
             // probably the least secure way to store the token
             // we should use httpOnly cookies in a future improvement
-            localStorage.setItem("token", token.access_token);
+            localStorage.setItem("token", tokenData.access_token);
             setError("");
         } else if (responseToken.status === 404 || responseToken.status === 401) {
             setError("Invalid credentials");
+            return;
+        } else if (responseToken.status === 200 && tokenData?.detail === "Two-factor authentication is enabled") {
+            if (!payload.totp) {
+                navigate("/2fa-login", {
+                    state: {
+                        username: payload.username,
+                        password: payload.password,
+                    }
+                });
+                return;
+            }
+            return;
+        } else if (responseToken.status >= 400 && responseToken.status < 500) {
+            setError("There was an error. " + tokenData?.detail);
             return;
         } else if (responseToken.status >= 500) {
             setError("There was an error on the server. Please try again later.");
@@ -61,7 +88,7 @@ export const AuthContextProvider = ({children} : Props)  => {
         const response = await fetch("https://api-staging.duckpass.ch/get_user", {
             headers: {
                 Accept: 'application/json',
-                Authorization: `Bearer ${token.access_token}`,
+                Authorization: `Bearer ${tokenData.access_token}`,
             }
         })
 
@@ -91,14 +118,79 @@ export const AuthContextProvider = ({children} : Props)  => {
             console.error(data);
         }
 
-    };
+    }
 
     const logout = async () => {};
+    const genAuthKey = async () => {
+        const token = localStorage.getItem("token");
+        const response = await fetch("https://api-staging.duckpass.ch/generate_auth_key", {
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        })
+        const data = await response.json();
+        console.log(data.url)
+        setError("");
+        setAuthKey(data);
+    };
+    const enable2FA = async (payload: {authKey: string, totp: number}) => {
+        const token = localStorage.getItem("token");
+        const twoFactorParams = {
+            auth_key: payload.authKey,
+            totp_code: payload.totp.toString(),
+        };
+        setError("");
+        const response = await fetch("https://api-staging.duckpass.ch/enable_two_factor_auth?" + new URLSearchParams(twoFactorParams), {
+            method: "POST",
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        }).catch((error) => {
+            setError(error.message)
+        });
+
+        if (!response) {
+            setError("Something went wrong. Please try again later.");
+            return;
+        }
+
+        if (response.status === 200) {
+            setTwoFactorEnabled(true);
+            return;
+        }
+
+        setError("Validation failed.");
+    };
+    const disable2FA = async () => {
+        const token = localStorage.getItem("token");
+        const response = await fetch("https://api-staging.duckpass.ch/disable_two_factor_auth", {
+            method: "POST",
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        }).catch((error) => {
+            setError(error.message)
+        });
+
+        if (!response) {
+            setError("Something went wrong. Please try again later.");
+            return;
+        }
+
+        if (response.status === 200) {
+            setError("");
+            setTwoFactorEnabled(false);
+            return;
+        }
+    }
     const renew = async () => {};
 
     return (
         <>
-            <AuthContext.Provider value={{user, error, login, logout, renew}}>
+            <AuthContext.Provider value={{user, error, twoFactorEnabled, authKey, login, logout, genAuthKey, enable2FA, disable2FA, renew}}>
                 {children}
             </AuthContext.Provider>
         </>

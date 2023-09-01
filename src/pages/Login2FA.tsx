@@ -7,9 +7,15 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import Logo from "@/assets/ducky-round.png"
+import { useLocation } from "react-router-dom"
 import { Login2FAAuthForm } from "@/components/auth/login-2fa-auth-form"
+import { useContext } from "react"
+import { AuthContext } from "@/components/context/AuthContext"
 
 export default function Login2FA() {
+  const location = useLocation();
+  const {error} = useContext(AuthContext);
+
   return (
     <>
       <div className="container h-screen flex flex-col items-center justify-center">
@@ -19,12 +25,10 @@ export default function Login2FA() {
         <Card className="w-[350px]">
           <CardHeader>
             <CardTitle>Two-factor Authentication</CardTitle>
-            <CardDescription>
-                Open your two-factor authentication (TOTP) app or browser extension to view your authentication code.
-            </CardDescription>
+            <CardDescription>{error ? <span className="text-md font-semibold text-red-500">{error}</span> : "Open your two-factor authentication (TOTP) app or browser extension to view your authentication code."}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Login2FAAuthForm />
+            <Login2FAAuthForm username={location?.state?.username} password={location?.state?.password} />
           </CardContent>
         </Card>
       </div>

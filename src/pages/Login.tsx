@@ -26,7 +26,7 @@ export default function LoginPage() {
         <Card className="w-[350px]">
           <CardHeader>
             <CardTitle>Log In</CardTitle>
-            <CardDescription>{error ? <span className="text-red-500">{error}</span> : "By logging in you will access to your personal vault." }</CardDescription>
+            <CardDescription>{error ? <span className="text-md font-semibold text-red-500">{error}</span> : "By logging in you will access to your personal vault." }</CardDescription>
           </CardHeader>
           <CardContent>
             <LoginAuthForm />

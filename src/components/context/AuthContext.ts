@@ -8,12 +8,21 @@ type User = {
     vault?: string;
 }
 
+type AuthKey = {
+    authKey: string,
+    url: string,
+}
 
 type IAuthContext = {
     user: User;
     error: string;
-    login: (payload: {username: string, password: string}) => void;
+    twoFactorEnabled: boolean;
+    authKey: AuthKey;
+    login: (payload: {username: string, password: string, totp?: number}) => void;
     logout: () => void;
+    genAuthKey: () => void;
+    enable2FA: (payload: {authKey: string, totp: number}) => void;
+    disable2FA: () => void;
     renew: () => void;
 }
 
@@ -26,10 +35,17 @@ const defaultValues = {
         two_factor_auth_enabled: false,
         vault: "",
     },
+    twoFactorEnabled: false,
+    authKey: {
+        authKey: "",
+        url: "",
+    },
     login: async () => {},
     logout: async () => {},
+    genAuthKey: async () => {},
+    enable2FA: async () => {},
+    disable2FA: async () => {},
     renew: async () => {},
 };
-
 
 export const AuthContext = createContext<IAuthContext>(defaultValues);
