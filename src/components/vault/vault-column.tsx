@@ -18,17 +18,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { EditPasswordForm } from "./edit-password-form"
-
-export type Credential = {
-  id: number
-  name: string
-  username: string
-  password: string
-  authKey: string
-  totp: string
-  note: string
-  favorite?: boolean
-}
+import { Credential, VaultManager } from "@/lib/models/vault"
+import { VaultContext } from "../context/VaultContext"
+import { useContext } from "react"
 
 export const columns: ColumnDef<Credential>[] = [
   {
@@ -59,11 +51,7 @@ export const columns: ColumnDef<Credential>[] = [
   },
   {
     accessorKey: "authKey",
-    header: "Authenticator Key",
-  },
-  {
-    accessorKey: "totp",
-    header: "TOTP",
+    header: "Authenticator Key (TOTP)",
   },
   {
     accessorKey: "note",
@@ -93,7 +81,8 @@ export const columns: ColumnDef<Credential>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const cred = row.original
-
+      const {vault, updateVault} = useContext(VaultContext)
+    
       return (
         <>
           <Dialog>
@@ -107,7 +96,6 @@ export const columns: ColumnDef<Credential>[] = [
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem className="hover:cursor-pointer"
-                  onClick={() => copy(cred.totp)}
                 >
                   <DialogTrigger asChild className="w-full p-0">
                     <Button variant="ghost"><Pen className="text-gray-500 mr-2 w-4" />Edit</Button>
@@ -127,13 +115,19 @@ export const columns: ColumnDef<Credential>[] = [
                   Copy password
                 </DropdownMenuItem>
                 <DropdownMenuItem className="hover:cursor-pointer"
-                  onClick={() => copy(cred.totp)}
+                  onClick={() => copy(cred.authKey)}
                 >
                   <Clock className="text-gray-500 mr-2 w-4" />
                   Copy TOTP
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="hover:cursor-pointer">
+                <DropdownMenuItem className="hover:cursor-pointer"
+                  onClick={async () => {
+                    const id = cred.id
+                    await VaultManager.getInstance().removeItem(id)
+                    updateVault(VaultManager.getInstance().getVault())
+                  }}
+                >
                   <Trash className="text-red-500 mr-2 w-4" />
                   <span className="text-red-500">Delete</span>
                 </DropdownMenuItem>
