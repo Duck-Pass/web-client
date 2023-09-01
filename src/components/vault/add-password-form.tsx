@@ -16,20 +16,26 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { AlertDialogCancel, AlertDialogAction, AlertDialogFooter } from "../ui/alert-dialog";
 import { Input } from "@/components/ui/input"
 import PasswordStrengthMeter from "./password-strength-meter";
 import { Copy } from "lucide-react"
 import PasswordGeneratorPopover from "./password-generator-popover";
+import { VaultManager } from "@/lib/models/vault";
+import { VaultContext } from "../context/VaultContext";
+import { useContext } from "react";
 
 const formSchema = z.object({
   name: z.string().trim().min(5),
   username: z.string().trim(),
   password: z.string().min(8),
   note: z.string().optional(),
-  totp: z.string().optional(),
+  authKey: z.string().optional(),
 })
 
-export function AddPasswordForm() {
+export function AddPasswordForm({openOnChange}: {openOnChange: (open: boolean) => void}) {
+  
+  const {updateVault} = useContext(VaultContext)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -38,12 +44,31 @@ export function AddPasswordForm() {
         username: "",
         password: "",
         note: "",
-        totp: "",
+        authKey: "",
     },
   })
   
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const manager = VaultManager.getInstance()
+  
+    if (!values.name || !values.username || !values.username) {
+      return;
+    }
+
+    await manager.addItem({
+      id: '',
+      name: values.name,
+      username: values.username,
+      password: values.password,
+      authKey: values.authKey ?? "",
+      note: values.note ?? "",
+      favorite: false
+    })
+
+    openOnChange(false)
+
+    updateVault(manager.getVault())
+
   }
 
   return (
@@ -115,7 +140,7 @@ export function AddPasswordForm() {
         />
         <FormField
           control={form.control}
-          name="totp"
+          name="authKey"
           render={({ field }) => (
             <FormItem>
               <FormLabel>TOTP key</FormLabel>
@@ -126,9 +151,12 @@ export function AddPasswordForm() {
             </FormItem>
           )}
         />
-        <div className="flex flex-col w-full mt-2">
-          <Button type="submit">Add new password</Button>
-        </div>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Button type="submit">
+              Add new password
+            </Button>
+        </AlertDialogFooter>
       </form>
     </Form>
   )
