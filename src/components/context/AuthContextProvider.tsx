@@ -17,7 +17,7 @@ export const AuthContextProvider = ({children} : Props)  => {
     })
 
     const [error, setError] = useState("");
-    const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+    const [twoFactorEnabled, setTwoFactorEnabled] = useState(user?.hasTwoFactorAuth ? user.hasTwoFactorAuth : false);
     const [authKey, setAuthKey] = useState({authKey:"", url:""});
 
     const navigate = useNavigate();
@@ -186,11 +186,10 @@ export const AuthContextProvider = ({children} : Props)  => {
             return;
         }
     }
-    const renew = async () => {};
 
     return (
         <>
-            <AuthContext.Provider value={{user, error, twoFactorEnabled, authKey, login, logout, genAuthKey, enable2FA, disable2FA, renew}}>
+            <AuthContext.Provider value={{user, error, twoFactorEnabled, authKey, login, logout, genAuthKey, enable2FA, disable2FA}}>
                 {children}
             </AuthContext.Provider>
         </>
