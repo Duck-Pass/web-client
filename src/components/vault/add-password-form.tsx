@@ -16,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { AlertDialogCancel, AlertDialogAction, AlertDialogFooter } from "../ui/alert-dialog";
+import { AlertDialogCancel, AlertDialogFooter } from "../ui/alert-dialog";
 import { Input } from "@/components/ui/input"
 import PasswordStrengthMeter from "./password-strength-meter";
 import { Copy } from "lucide-react"
