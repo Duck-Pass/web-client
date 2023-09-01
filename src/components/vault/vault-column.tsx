@@ -71,9 +71,24 @@ export const columns: ColumnDef<Credential>[] = [
       )
     },
     cell: ({ row }) => {
-      const fav = row.getValue("favorite")
-      
-      return <Star className="mx-4 font-medium hover:cursor-pointer" fill={`${fav ? 'primary' : 'none'}`} />
+      let fav: boolean = row.getValue("favorite") ?? false
+      const {updateVault} = useContext(VaultContext)
+      return <Star onClick={() => {
+        fav = !fav
+        console.log(fav)
+        const id : string = row.getValue("id")
+        const manager = VaultManager.getInstance()
+        manager.editItem({
+          id: id,
+          name: row.getValue('name'),
+          username: row.getValue('username'),
+          password: row.getValue('password'),
+          authKey: row.getValue('authKey'),
+          note: row.getValue('note'),
+          favorite: fav
+        })
+        updateVault(manager.getVault())
+      }} className="mx-4 font-medium hover:cursor-pointer" fill={`${fav ? 'primary' : 'none'}`} />
     },
   },
   {
@@ -81,7 +96,7 @@ export const columns: ColumnDef<Credential>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const cred = row.original
-      const {vault, updateVault} = useContext(VaultContext)
+      const {updateVault} = useContext(VaultContext)
     
       return (
         <>

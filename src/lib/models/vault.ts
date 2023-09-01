@@ -66,7 +66,9 @@ export class VaultManager {
     public async editItem(item: Credential) {
         VaultManager.vault = VaultManager.vault.map((i) => {
             if (i.id === item.id) {
-                item.favorite = i.favorite ?? false
+                if (!i.favorite && !item.favorite) {
+                    item.favorite = false
+                }
                 return item
             }
             return i
