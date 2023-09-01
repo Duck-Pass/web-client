@@ -4,7 +4,6 @@ export type Credential = {
     username: string
     password: string
     authKey: string
-    totp: string
     note: string
     favorite?: boolean
 }
@@ -15,7 +14,7 @@ import { WebCryptoPrimitivesService } from '../services/webcrypto-primitives.ser
 import { SymmetricCryptoKey, UserKey } from './symmetric-crypto-key'
 import { v4 as uuid } from 'uuid';
 
-type Vault = Credential[]
+export type Vault = Credential[]
 
 export class VaultManager {
     private static vault: Vault
@@ -35,10 +34,9 @@ export class VaultManager {
             }
             if (vaultJson) {
                 VaultManager.vault = JSON.parse(vaultJson)
-            }
-
-            if (!VaultManager.vault) {
+            } else {
                 VaultManager.vault = []
+                localStorage.setItem('vault', JSON.stringify(VaultManager.vault))
             }
         }
         return VaultManager.instance
@@ -48,7 +46,6 @@ export class VaultManager {
         VaultManager.vault = []
         VaultManager.key = null
         localStorage.removeItem('vault')
-
     }
 
     public async lock() {
@@ -58,8 +55,8 @@ export class VaultManager {
             const encryptionService = new WebCryptoEncryptionService(primitives);
             const encryptedVault = await encryptionService.encrypt(jsonVault, VaultManager.key);
             localStorage.setItem('vault', encryptedVault.toJSON());
+            VaultManager.vault = []
         }
-
     }
 
     public getVault(): Vault {
@@ -73,6 +70,7 @@ export class VaultManager {
             }
             return i
         });
+        this.sync()
     }
 
     public async addItem(item: Credential) {
