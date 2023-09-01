@@ -5,6 +5,7 @@ import { WebCryptoPrimitivesService } from "@/lib/services/webcrypto-primitives.
 import { ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
+import { VaultManager } from "@/lib/models/vault";
 
 type Props = {
     children: ReactNode;
@@ -106,9 +107,10 @@ export const AuthContextProvider = ({children} : Props)  => {
             if (data.vault) {
                 const encryptedVault = new EncryptedString(data.vault as EncString);
                 const vault = await encryptionService.decrypt(encryptedVault, userKey);
-                localStorage.setItem("vault", JSON.stringify(vault));
+                localStorage.setItem("vault", vault);
+                VaultManager.getInstance();
             } else {
-                // create vault and sync with the server                
+                VaultManager.getInstance();
             }
 
             setUser(data);
