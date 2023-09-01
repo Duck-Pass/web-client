@@ -11,6 +11,7 @@ import { VaultContextProvider } from './components/context/VaultContextProvider'
 import PasswordReset from './pages/PasswordReset';
 import Login2FA from './pages/Login2FA';
 import Page404 from './pages/Page404'
+import { Toaster } from './components/ui/toaster';
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
         </Routes>
         </AuthContextProvider>
       </HashRouter>
+      <Toaster />
     </>
 )
 }

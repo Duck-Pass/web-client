@@ -13,18 +13,22 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import PasswordStrengthMeter from "./password-strength-meter";
-import { Credential } from "./vault-column";
+import { Credential, VaultManager } from "@/lib/models/vault";
+import { VaultContext } from "../context/VaultContext";
+import { useContext } from "react";
+import { useToast } from "@/components/ui/use-toast"
 
 export type PasswordModalProps = {
     cred: Credential
 }
 
 const formSchema = z.object({
+  id: z.string(),
   name: z.string().trim().min(5),
   username: z.string().trim(),
   password: z.string().min(8),
   note: z.string().optional(),
-  totp: z.string().optional(),
+  authKey: z.string().optional(),
 })
 
 
@@ -32,16 +36,40 @@ export function EditPasswordForm(props: PasswordModalProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+        id: props.cred.id,
         name: props.cred.name,
         username: props.cred.username,
         password: props.cred.password,
         note: props.cred.note,
-        totp: props.cred.totp,
+        authKey: props.cred.authKey,
     },
   })
+  const {updateVault} = useContext(VaultContext)
+  const { toast } = useToast()
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const manager = VaultManager.getInstance()
   
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    if (!values.name || !values.username || !values.username) {
+      return;
+    }
+
+    await manager.editItem({
+      id: values.id,
+      name: values.name,
+      username: values.username,
+      password: values.password,
+      authKey: values.authKey ?? "",
+      note: values.note ?? "",
+    })
+
+    updateVault(manager.getVault())  
+  
+    toast({
+      title: "Information updated!",
+      description: "Your credential information have been updated!"
+    })
+
   }
 
   return (
@@ -102,7 +130,7 @@ export function EditPasswordForm(props: PasswordModalProps) {
         />
         <FormField
           control={form.control}
-          name="totp"
+          name="authKey"
           render={({ field }) => (
             <FormItem>
               <FormLabel>TOTP key</FormLabel>
