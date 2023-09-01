@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Vault from './pages/Vault'
 import AccountVerified from './pages/AccountVerified';
 import Profile from './pages/Profile'
+import { AuthContextProvider } from './components/context/AuthContextProvider';
 import PasswordReset from './pages/PasswordReset';
 import Login2FA from './pages/Login2FA';
 import Page404 from './pages/Page404'
@@ -15,6 +16,7 @@ function App() {
   return (
     <>
       <HashRouter>
+        <AuthContextProvider>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
@@ -26,6 +28,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Page404 />} />
         </Routes>
+        </AuthContextProvider>
       </HashRouter>
     </>
 )

@@ -66,7 +66,7 @@ export function RegisterAuthForm(
       symmetric_key_encrypted: encryptedKey.toJSON(),
     }
     
-    const response = await fetch("https://api-staging.duckpass.ch/register/?" + new URLSearchParams(payload), {
+    const response = await fetch("https://api-staging.duckpass.ch/register?" + new URLSearchParams(payload), {
       method: "POST",
     })
 

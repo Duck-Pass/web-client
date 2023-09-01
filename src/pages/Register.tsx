@@ -25,7 +25,7 @@ export default function Register() {
         <Card className="w-[350px]">
           <CardHeader>
             <CardTitle>Register</CardTitle>
-            <CardDescription>{submitted ? (error ? 'There is an error with your registration' : 'Congratulation! Your account has been created!') : 'Create your account to access your personnal vault.'}</CardDescription>
+            <CardDescription>{submitted ? (error ? 'There is an error with your registration' : 'Congratulations! Your account has been created!') : 'Create your account to access your personnal vault.'}</CardDescription>
           </CardHeader>
           <CardContent>
             {submitted ? error ? <p className="text-sm text-left">{error}</p> :  <p className="text-sm text-left">Your account has been created! Check your emails!</p>
