@@ -11,8 +11,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { LogOut } from 'lucide-react'
 import { Button } from "@/components/ui/button"
+import { useContext } from 'react'
+import { AuthContext } from '../context/AuthContext'
 
 export default function Header() {
+  const {logout} = useContext(AuthContext)
   return (
     <header className="w-full z-30 transition duration-300 ease-in-out bg-[#022837] shadow-lg mb-5">
       <div className="max-w-6xl mx-auto px-5">
@@ -47,7 +50,7 @@ export default function Header() {
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="hover:cursor-pointer">
+                <DropdownMenuItem className="hover:cursor-pointer" onClick={() => logout()}>
                   <LogOut className="text-red-500 w-4 mr-2" />
                   <span className="text-red-500">Log out</span>
                 </DropdownMenuItem>
