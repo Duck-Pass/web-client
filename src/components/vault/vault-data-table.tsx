@@ -37,13 +37,13 @@ export function VaultDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({
     id: false,
     password: false,
     authKey: false,
-    totp: false,
     note: false,
   })
 
@@ -79,7 +79,7 @@ export function VaultDataTable<TData, TValue>({
           className="w-full"
         />
         <BreachesModal />
-        <AddPasswordModal />
+        <AddPasswordModal/>
       </div>
       <div className="md:col-span-2">
         <div className="rounded-md border">

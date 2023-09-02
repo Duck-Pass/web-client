@@ -1,31 +1,33 @@
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog"
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+  } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { AddPasswordForm } from "./add-password-form"
+import { useState } from "react"
 
 export default function AddPasswordModal() {
+    const [open, setOpen] = useState<boolean>()
     return (
       <div className="w-full">
-        <Dialog>
-          <DialogTrigger asChild className="w-full">
+        <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialogTrigger asChild className="w-full">
             <Button>Add password</Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Add a new password</DialogTitle>
-              <DialogDescription>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="sm:max-w-[425px]">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Add a new password</AlertDialogTitle>
+              <AlertDialogDescription>
                 Type a new password here. Click save when you're done.
-              </DialogDescription>
-            </DialogHeader>
-            <AddPasswordForm />
-          </DialogContent>
-        </Dialog>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AddPasswordForm openOnChange={(open: boolean) => setOpen(open)} />
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     )
 }

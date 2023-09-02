@@ -7,8 +7,10 @@ import Vault from './pages/Vault'
 import AccountVerified from './pages/AccountVerified';
 import Profile from './pages/Profile';
 import { AuthContextProvider } from './components/context/AuthContextProvider';
+import { VaultContextProvider } from './components/context/VaultContextProvider';
 import Login2FA from './pages/Login2FA';
-import Page404 from './pages/Page404';
+import Page404 from './pages/Page404'
+import { Toaster } from './components/ui/toaster';
 
 function App() {
 
@@ -22,12 +24,17 @@ function App() {
           <Route path="/account-verified" element={<AccountVerified />} />
           <Route path="/2fa-login" element={<Login2FA />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/vault" element={<Vault />} />
+            <Route path="/vault" element={
+            <VaultContextProvider>
+              <Vault />
+            </VaultContextProvider>
+            } />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Page404 />} />
         </Routes>
         </AuthContextProvider>
       </HashRouter>
+      <Toaster />
     </>
 )
 }
