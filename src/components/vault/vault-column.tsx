@@ -75,7 +75,6 @@ export const columns: ColumnDef<Credential>[] = [
       const {updateVault} = useContext(VaultContext)
       return <Star onClick={() => {
         fav = !fav
-        console.log(fav)
         const id : string = row.getValue("id")
         const manager = VaultManager.getInstance()
         manager.editItem({
