@@ -18,7 +18,7 @@ export type Vault = Credential[]
 
 export class VaultManager {
     private static vault: Vault
-    private static instance : VaultManager
+    private static instance : VaultManager | null
     private static key: UserKey | null
     private constructor() {}
 
@@ -42,9 +42,10 @@ export class VaultManager {
         return VaultManager.instance
     }
 
-    public async clear() {
+    public static async reset() {
         VaultManager.vault = []
         VaultManager.key = null
+        VaultManager.instance = null
         localStorage.removeItem('vault')
     }
 
