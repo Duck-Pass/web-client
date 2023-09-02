@@ -27,13 +27,16 @@ export class VaultManager {
             VaultManager.instance = new VaultManager()
 
             const vaultJson = localStorage.getItem('vault')
-            const userProfile = JSON.parse(localStorage.getItem('userProfile') ?? "");
+            const userProfile = JSON.parse(localStorage.getItem('userProfile') ?? "{}");
             const userKey = userProfile.symmetric_key?.b64key ?? "";
             if (userKey) {
                 VaultManager.key = new SymmetricCryptoKey(BufferUtils.fromBase64ToByteArray(userKey)) as UserKey;
             }
             if (vaultJson) {
-                VaultManager.vault = JSON.parse(vaultJson)
+                const vault = JSON.parse(vaultJson)
+                if (vault.length > 0) {
+                    VaultManager.vault = vault
+                }
             } else {
                 VaultManager.vault = []
                 localStorage.setItem('vault', JSON.stringify(VaultManager.vault))

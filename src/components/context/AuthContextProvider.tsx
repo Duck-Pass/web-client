@@ -13,7 +13,7 @@ type Props = {
 
 export const AuthContextProvider = ({children} : Props)  => {
     const [user, setUser] = useState(() => {
-        const user = localStorage.getItem("user");
+        const user = localStorage.getItem("userProfile");
         return user ? JSON.parse(user) : {};
     })
 
@@ -122,7 +122,22 @@ export const AuthContextProvider = ({children} : Props)  => {
 
     }
 
-    const logout = async () => {};
+    const logout = async () => {
+        await VaultManager.getInstance().sync();
+        await fetch("https://api-staging.duckpass.ch/logout", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
+        localStorage.removeItem("token");
+        localStorage.removeItem("userProfile");
+        VaultManager.reset();
+        setUser({});
+        setTwoFactorEnabled(false);
+        setAuthKey({authKey:"", url:""});
+        navigate("/");
+    };
     const genAuthKey = async () => {
         const token = localStorage.getItem("token");
         const response = await fetch("https://api-staging.duckpass.ch/generate_auth_key", {
@@ -132,7 +147,6 @@ export const AuthContextProvider = ({children} : Props)  => {
             }
         })
         const data = await response.json();
-        console.log(data.url)
         setError("");
         setAuthKey(data);
     };
