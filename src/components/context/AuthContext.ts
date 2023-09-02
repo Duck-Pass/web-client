@@ -23,7 +23,6 @@ type IAuthContext = {
     genAuthKey: () => void;
     enable2FA: (payload: {authKey: string, totp: number}) => void;
     disable2FA: () => void;
-    renew: () => void;
 }
 
 const defaultValues = {
@@ -45,7 +44,6 @@ const defaultValues = {
     genAuthKey: async () => {},
     enable2FA: async () => {},
     disable2FA: async () => {},
-    renew: async () => {},
 };
 
 export const AuthContext = createContext<IAuthContext>(defaultValues);

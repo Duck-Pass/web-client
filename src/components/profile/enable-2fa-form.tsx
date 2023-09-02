@@ -48,7 +48,7 @@ export function Enable2FAForm() {
         <p className="text-center text-md text-green-400 font-semibold mb-4">{twoFactorEnabled ? "Two-factor authentication is enabled" : ""}</p>
 
         {twoFactorEnabled ? 
-          <Button type="button" onClick={() => handleDisableButton()}>Disable 2FA</Button>
+          <Button type="button" variant="destructive" onClick={() => handleDisableButton()}>Disable 2FA</Button>
         :
           <div>
             <div className="flex flex-col justify-center items-center my-2">
