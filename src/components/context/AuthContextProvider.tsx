@@ -2,10 +2,11 @@ import { EncryptedString, EncString } from "@/lib/models/encrypted-string";
 import { CryptoService } from "@/lib/services/crypto.service";
 import { WebCryptoEncryptionService } from "@/lib/services/webcrypto-encryption.service";
 import { WebCryptoPrimitivesService } from "@/lib/services/webcrypto-primitives.service";
-import { ReactNode, useState } from "react";
+import { ReactNode, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import { VaultManager } from "@/lib/models/vault";
+import { VaultContext } from "./VaultContext";
 
 type Props = {
     children: ReactNode;
@@ -20,6 +21,7 @@ export const AuthContextProvider = ({children} : Props)  => {
     const [error, setError] = useState("");
     const [twoFactorEnabled, setTwoFactorEnabled] = useState(user?.hasTwoFactorAuth ? user.hasTwoFactorAuth : false);
     const [authKey, setAuthKey] = useState({authKey:"", url:""});
+    const {updateVault} = useContext(VaultContext)
 
     const navigate = useNavigate();
 
@@ -33,7 +35,7 @@ export const AuthContextProvider = ({children} : Props)  => {
         setError("");
         const authUrl = payload.totp ? "https://api-staging.duckpass.ch/check_two_factor_auth" : "https://api-staging.duckpass.ch/token";
 
-        let credentials:{username: string, password: string, totp_code?: string} = {
+        const credentials:{username: string, password: string, totp_code?: string} = {
             username: payload.username,
             password: hashMasterKey,
         }
@@ -95,9 +97,11 @@ export const AuthContextProvider = ({children} : Props)  => {
 
         const data = await response.json();
 
+
         if (response.ok) {
             const encryptedKey = new EncryptedString(data.symmetricKeyEncrypted as EncString)
             const userKey = await cryptoService.decryptUserKey(masterKey, encryptedKey);
+
             localStorage.setItem("userProfile", JSON.stringify({
                 id: data.id,
                 email: data.email,
@@ -108,11 +112,11 @@ export const AuthContextProvider = ({children} : Props)  => {
                 const encryptedVault = new EncryptedString(data.vault as EncString);
                 const vault = await encryptionService.decrypt(encryptedVault, userKey);
                 localStorage.setItem("vault", vault);
-                VaultManager.getInstance();
-            } else {
-                VaultManager.getInstance();
-            }
-
+            } 
+            // if an instance of VaultManager have ever been created for some reasons
+            // we need to destroy it to trigger the context update
+            VaultManager.destroyInstance()
+            updateVault(VaultManager.getInstance().getVault());
             setUser(data);
     
             navigate("/vault");
@@ -122,6 +126,20 @@ export const AuthContextProvider = ({children} : Props)  => {
 
     }
 
+    const isTokenExpired = () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            return true
+        }
+
+        const jwtPayload = JSON.parse(window.atob(token.split(".")[1]));
+        const expirationDate = new Date(jwtPayload.exp * 1000);
+        const now = new Date();
+        return now >= expirationDate;
+    }
+
+
+
     const logout = async () => {
         await VaultManager.getInstance().sync();
         await fetch("https://api-staging.duckpass.ch/logout", {
@@ -130,14 +148,19 @@ export const AuthContextProvider = ({children} : Props)  => {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             }
         })
+        clearState();
+        navigate("/");
+    };
+
+    const clearState = () => {
+        updateVault([]);
         localStorage.removeItem("token");
         localStorage.removeItem("userProfile");
         VaultManager.reset();
         setUser({});
         setTwoFactorEnabled(false);
         setAuthKey({authKey:"", url:""});
-        navigate("/");
-    };
+    }
     const genAuthKey = async () => {
         const token = localStorage.getItem("token");
         const response = await fetch("https://api-staging.duckpass.ch/generate_auth_key", {
@@ -205,7 +228,7 @@ export const AuthContextProvider = ({children} : Props)  => {
 
     return (
         <>
-            <AuthContext.Provider value={{user, error, twoFactorEnabled, authKey, login, logout, genAuthKey, enable2FA, disable2FA}}>
+            <AuthContext.Provider value={{user, error, twoFactorEnabled, authKey, login, logout, genAuthKey, enable2FA, disable2FA, isTokenExpired, clearState}}>
                 {children}
             </AuthContext.Provider>
         </>
