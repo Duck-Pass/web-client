@@ -1,4 +1,4 @@
-import { Opaque } from 'type-fest'
+import { Opaque } from "type-fest";
 
-type CsprngArray = Opaque<Uint8Array, 'CSPRNG'>
-type CsprngString = Opaque<string, 'CSPRNG'>
+type CsprngArray = Opaque<Uint8Array, "CSPRNG">;
+type CsprngString = Opaque<string, "CSPRNG">;
