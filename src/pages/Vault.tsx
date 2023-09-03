@@ -18,7 +18,7 @@ export default function Vault() {
 						My vault
 					</p>
 					<p className="text-sm text-muted-foreground mb-2">
-						Your personal vault is entierely encrypted. You are the
+						Your personal vault is entirely encrypted. You are the
 						only one able to access to it.
 					</p>
 					<Separator />
