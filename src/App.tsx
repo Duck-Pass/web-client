@@ -18,6 +18,7 @@ function App() {
   return (
     <>
       <HashRouter>
+        <VaultContextProvider>
         <AuthContextProvider>
         <Routes>
           <Route element={<PublicRoute/>}>
@@ -29,15 +30,14 @@ function App() {
           </Route>
           <Route element={<PrivateRoute/>}>
             <Route path="/vault" element={
-              <VaultContextProvider>
-                <Vault />
-              </VaultContextProvider>
-              } />
+                  <Vault />
+                } />
             <Route path="/profile" element={<Profile />} />
           </Route>
           <Route path="*" element={<Page404 />} />
         </Routes>
         </AuthContextProvider>
+        </VaultContextProvider>
       </HashRouter>
       <Toaster />
     </>

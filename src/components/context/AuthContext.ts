@@ -19,10 +19,12 @@ type IAuthContext = {
     twoFactorEnabled: boolean;
     authKey: AuthKey;
     login: (payload: {username: string, password: string, totp?: number}) => void;
+    isTokenExpired(): boolean;
     logout: () => void;
     genAuthKey: () => void;
     enable2FA: (payload: {authKey: string, totp: number}) => void;
     disable2FA: () => void;
+    clearState: () => void;
 }
 
 const defaultValues = {
@@ -39,6 +41,8 @@ const defaultValues = {
         authKey: "",
         url: "",
     },
+    isTokenExpired: () => true,
+    clearState: () => {},
     login: async () => {},
     logout: async () => {},
     genAuthKey: async () => {},

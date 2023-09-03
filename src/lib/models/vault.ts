@@ -22,6 +22,14 @@ export class VaultManager {
     private static key: UserKey | null
     private constructor() {}
 
+    public static instanceExists(): boolean {
+        return VaultManager.instance !== null
+    }
+
+    public static destroyInstance() {
+        VaultManager.instance = null
+    }
+
     public static getInstance(): VaultManager {
         if (!VaultManager.instance) {
             VaultManager.instance = new VaultManager()
@@ -34,9 +42,7 @@ export class VaultManager {
             }
             if (vaultJson) {
                 const vault = JSON.parse(vaultJson)
-                if (vault.length > 0) {
-                    VaultManager.vault = vault
-                }
+                VaultManager.vault = vault
             } else {
                 VaultManager.vault = []
                 localStorage.setItem('vault', JSON.stringify(VaultManager.vault))

@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { Vault, VaultManager } from "@/lib/models/vault";
+import { Vault } from "@/lib/models/vault";
 
 type IVaultContext = {
     vault: Vault,
@@ -7,7 +7,7 @@ type IVaultContext = {
 }
 
 const defaultValues = {
-    vault: VaultManager.getInstance().getVault(),
+    vault: [],
     updateVault: async () => {}
 }
 

@@ -8,12 +8,15 @@ type Props = {
 
 export const VaultContextProvider = ({children}: Props) => {
     const [vault, setVault] = useState(() => {
-        return VaultManager.getInstance().getVault();
+        if (VaultManager.instanceExists()) {
+            return VaultManager.getInstance().getVault();
+        }
+        return [];
     })
 
-    const updateVault = async (vault: Vault) => {
+    const updateVault = async (v: Vault) => {
         // we need to deep copy the object
-        setVault(JSON.parse(JSON.stringify(vault)));
+        setVault(JSON.parse(JSON.stringify(v)));
     }
 
     return (
