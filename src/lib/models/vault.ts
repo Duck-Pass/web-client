@@ -53,7 +53,7 @@ export class VaultManager {
     }
 
     public async lock() {
-        let jsonVault = JSON.stringify(VaultManager.vault)
+        const jsonVault = JSON.stringify(VaultManager.vault)
         if (jsonVault && VaultManager.key) {
             const primitives = new WebCryptoPrimitivesService(window);
             const encryptionService = new WebCryptoEncryptionService(primitives);
@@ -92,13 +92,13 @@ export class VaultManager {
     }
 
     public async sync() {
-        let jsonVault = JSON.stringify(VaultManager.vault)
+        const jsonVault = JSON.stringify(VaultManager.vault)
         if (jsonVault && VaultManager.key) {
             const primitives = new WebCryptoPrimitivesService(window);
             const encryptionService = new WebCryptoEncryptionService(primitives);
             const encryptedVault = await encryptionService.encrypt(jsonVault, VaultManager.key);
             await fetch('https://api-staging.duckpass.ch/update_vault', {
-                method: 'POST',
+                method: 'PUT',
                 body: JSON.stringify({
                     vault: encryptedVault.toJSON()
                 }),

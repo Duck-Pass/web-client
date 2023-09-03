@@ -61,13 +61,17 @@ export function RegisterAuthForm(
     const [_, encryptedKey] = await cryptoService.makeUserKey(masterKey1)
     const payload = {
       email: values.email,
-      key_hash: hashMasterKey1,
-      key_hash_conf: hashMasterKey2,
-      symmetric_key_encrypted: encryptedKey.toJSON(),
+      keyHash: hashMasterKey1,
+      keyHashConf: hashMasterKey2,
+      symmetricKeyEncrypted: encryptedKey.toJSON(),
     }
     
-    const response = await fetch("https://api-staging.duckpass.ch/register?" + new URLSearchParams(payload), {
+    const response = await fetch("https://api-staging.duckpass.ch/register", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     })
 
     if (response.ok) {
