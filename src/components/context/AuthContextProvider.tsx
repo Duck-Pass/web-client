@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import { VaultManager } from "@/lib/models/vault";
 import { VaultContext } from "./VaultContext";
+import env from "@/env.json";
 
 type Props = {
 	children: ReactNode;
@@ -47,8 +48,8 @@ export const AuthContextProvider = ({ children }: Props) => {
 
 		setError("");
 		const authUrl = payload.totp
-			? "https://api-staging.duckpass.ch/check_two_factor_auth"
-			: "https://api-staging.duckpass.ch/token";
+			? env.api + "/check_two_factor_auth"
+			: env.api + "/token";
 
 		const credentials: {
 			username: string;
@@ -121,15 +122,12 @@ export const AuthContextProvider = ({ children }: Props) => {
 			return;
 		}
 
-		const response = await fetch(
-			"https://api-staging.duckpass.ch/get_user",
-			{
-				headers: {
-					Accept: "application/json",
-					Authorization: `Bearer ${tokenData.access_token}`,
-				},
+		const response = await fetch(env.api + "/get_user", {
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${tokenData.access_token}`,
 			},
-		);
+		});
 
 		const data = await response.json();
 
@@ -187,7 +185,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 
 	const logout = async () => {
 		await VaultManager.getInstance().sync();
-		await fetch("https://api-staging.duckpass.ch/logout", {
+		await fetch(env.api + "/logout", {
 			method: "POST",
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -208,15 +206,12 @@ export const AuthContextProvider = ({ children }: Props) => {
 	};
 	const genAuthKey = async () => {
 		const token = localStorage.getItem("token");
-		const response = await fetch(
-			"https://api-staging.duckpass.ch/generate_auth_key",
-			{
-				headers: {
-					Accept: "application/json",
-					Authorization: `Bearer ${token}`,
-				},
+		const response = await fetch(env.api + "/generate_auth_key", {
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
 			},
-		);
+		});
 		const data = await response.json();
 		setError("");
 		setAuthKey(data);
@@ -229,7 +224,8 @@ export const AuthContextProvider = ({ children }: Props) => {
 		};
 		setError("");
 		const response = await fetch(
-			"https://api-staging.duckpass.ch/enable_two_factor_auth?" +
+			env.api +
+				"/enable_two_factor_auth?" +
 				new URLSearchParams(twoFactorParams),
 			{
 				method: "POST",
@@ -256,16 +252,13 @@ export const AuthContextProvider = ({ children }: Props) => {
 	};
 	const disable2FA = async () => {
 		const token = localStorage.getItem("token");
-		const response = await fetch(
-			"https://api-staging.duckpass.ch/disable_two_factor_auth",
-			{
-				method: "POST",
-				headers: {
-					Accept: "application/json",
-					Authorization: `Bearer ${token}`,
-				},
+		const response = await fetch(env.api + "/disable_two_factor_auth", {
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
 			},
-		).catch(error => {
+		}).catch(error => {
 			setError(error.message);
 		});
 

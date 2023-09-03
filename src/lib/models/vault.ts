@@ -13,6 +13,7 @@ import { WebCryptoEncryptionService } from "../services/webcrypto-encryption.ser
 import { WebCryptoPrimitivesService } from "../services/webcrypto-primitives.service";
 import { SymmetricCryptoKey, UserKey } from "./symmetric-crypto-key";
 import { v4 as uuid } from "uuid";
+import env from "../../env.json";
 
 export type Vault = Credential[];
 
@@ -35,17 +36,24 @@ export class VaultManager {
 			VaultManager.instance = new VaultManager();
 
 			const vaultJson = localStorage.getItem("vault");
-			const userProfile = JSON.parse(localStorage.getItem("userProfile") ?? "{}");
+			const userProfile = JSON.parse(
+				localStorage.getItem("userProfile") ?? "{}",
+			);
 			const userKey = userProfile.symmetric_key?.b64key ?? "";
 			if (userKey) {
-				VaultManager.key = new SymmetricCryptoKey(BufferUtils.fromBase64ToByteArray(userKey)) as UserKey;
+				VaultManager.key = new SymmetricCryptoKey(
+					BufferUtils.fromBase64ToByteArray(userKey),
+				) as UserKey;
 			}
 			if (vaultJson) {
 				const vault = JSON.parse(vaultJson);
 				VaultManager.vault = vault;
 			} else {
 				VaultManager.vault = [];
-				localStorage.setItem("vault", JSON.stringify(VaultManager.vault));
+				localStorage.setItem(
+					"vault",
+					JSON.stringify(VaultManager.vault),
+				);
 			}
 		}
 		return VaultManager.instance;
@@ -62,8 +70,13 @@ export class VaultManager {
 		const jsonVault = JSON.stringify(VaultManager.vault);
 		if (jsonVault && VaultManager.key) {
 			const primitives = new WebCryptoPrimitivesService(window);
-			const encryptionService = new WebCryptoEncryptionService(primitives);
-			const encryptedVault = await encryptionService.encrypt(jsonVault, VaultManager.key);
+			const encryptionService = new WebCryptoEncryptionService(
+				primitives,
+			);
+			const encryptedVault = await encryptionService.encrypt(
+				jsonVault,
+				VaultManager.key,
+			);
 			localStorage.setItem("vault", encryptedVault.toJSON());
 			VaultManager.vault = [];
 		}
@@ -74,7 +87,7 @@ export class VaultManager {
 	}
 
 	public async editItem(item: Credential) {
-		VaultManager.vault = VaultManager.vault.map((i) => {
+		VaultManager.vault = VaultManager.vault.map(i => {
 			if (i.id === item.id) {
 				if (!i.favorite && !item.favorite) {
 					item.favorite = false;
@@ -93,7 +106,7 @@ export class VaultManager {
 	}
 
 	public async removeItem(id: string) {
-		VaultManager.vault = VaultManager.vault.filter((i) => i.id !== id);
+		VaultManager.vault = VaultManager.vault.filter(i => i.id !== id);
 		await this.sync();
 	}
 
@@ -101,9 +114,14 @@ export class VaultManager {
 		const jsonVault = JSON.stringify(VaultManager.vault);
 		if (jsonVault && VaultManager.key) {
 			const primitives = new WebCryptoPrimitivesService(window);
-			const encryptionService = new WebCryptoEncryptionService(primitives);
-			const encryptedVault = await encryptionService.encrypt(jsonVault, VaultManager.key);
-			await fetch("https://api-staging.duckpass.ch/update_vault", {
+			const encryptionService = new WebCryptoEncryptionService(
+				primitives,
+			);
+			const encryptedVault = await encryptionService.encrypt(
+				jsonVault,
+				VaultManager.key,
+			);
+			await fetch(env.api + "/update_vault", {
 				method: "PUT",
 				body: JSON.stringify({
 					vault: encryptedVault.toJSON(),

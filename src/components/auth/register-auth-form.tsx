@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { WebCryptoPrimitivesService } from "@/lib/services/webcrypto-primitives.service";
 import { WebCryptoEncryptionService } from "@/lib/services/webcrypto-encryption.service";
 import { CryptoService } from "@/lib/services/crypto.service";
+import env from "@/env.json";
 
 const formSchema = z
 	.object({
@@ -89,16 +90,13 @@ export function RegisterAuthForm({
 			symmetricKeyEncrypted: encryptedKey.toJSON(),
 		};
 
-		const response = await fetch(
-			"https://api-staging.duckpass.ch/register",
-			{
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(payload),
+		const response = await fetch(env.api + "/register", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
 			},
-		);
+			body: JSON.stringify(payload),
+		});
 
 		if (response.ok) {
 			const data = await response.json();
