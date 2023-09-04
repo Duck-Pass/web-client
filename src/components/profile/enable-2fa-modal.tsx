@@ -12,10 +12,12 @@ import { useContext } from "react";
 import { AuthContext } from "@/components/context/AuthContext";
 
 export default function Enable2FAModal() {
-	const { twoFactorEnabled, genAuthKey } = useContext(AuthContext);
+	const { user, genAuthKey } = useContext(AuthContext);
 
 	async function handleClick() {
-		genAuthKey();
+		if (!user.has_two_factor_auth) {
+			genAuthKey();
+		}
 	}
 
 	return (
@@ -23,7 +25,7 @@ export default function Enable2FAModal() {
 			<Dialog>
 				<div className="p-4 rounded-md border flex flex-col space-y-2">
 					<p className="text-2xl font-semibold leading-none tracking-tight">
-						{twoFactorEnabled ? "Disable" : "Enable"} 2FA
+						{user.has_two_factor_auth ? "Disable" : "Enable"} 2FA
 						authentication
 					</p>
 					<DialogTrigger
@@ -32,7 +34,8 @@ export default function Enable2FAModal() {
 						className="w-full"
 					>
 						<Button className="w-full">
-							{twoFactorEnabled ? "Disable" : "Enable"} 2FA
+							{user.has_two_factor_auth ? "Disable" : "Enable"}{" "}
+							2FA
 						</Button>
 					</DialogTrigger>
 				</div>

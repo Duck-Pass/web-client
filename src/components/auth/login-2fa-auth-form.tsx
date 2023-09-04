@@ -18,7 +18,12 @@ import { useContext } from "react";
 import { AuthContext } from "@/components/context/AuthContext";
 
 const formSchema = z.object({
-	totp: z.coerce.number().min(100000).max(999999),
+	totp: z
+		.string()
+		.trim()
+		.regex(/^([0-9]){6}$/, {
+			message: "Your TOTP code must be a combination of 6 digits.",
+		}),
 });
 
 export function Login2FAAuthForm({
@@ -39,6 +44,9 @@ export function Login2FAAuthForm({
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
+		defaultValues: {
+			totp: "",
+		},
 	});
 	const { login } = useContext(AuthContext);
 

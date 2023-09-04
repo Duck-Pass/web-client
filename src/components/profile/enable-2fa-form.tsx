@@ -24,17 +24,25 @@ import { AuthContext } from "@/components/context/AuthContext";
 import Logo from "@/assets/ducky-round.png";
 
 const formSchema = z.object({
-	totp: z.coerce.number().gte(100000).lte(999999),
+	totp: z
+		.string()
+		.trim()
+		.regex(/^([0-9]){6}$/, {
+			message: "Your TOTP code must be a combination of 6 digits.",
+		}),
 });
 
 export function Enable2FAForm() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
+		defaultValues: {
+			totp: "",
+		},
 	});
-	const { error, authKey, twoFactorEnabled, enable2FA, disable2FA } =
+	const { error, authKey, user, enable2FA, disable2FA } =
 		useContext(AuthContext);
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	function handleEnableButton(values: z.infer<typeof formSchema>) {
 		enable2FA({ authKey: authKey.authKey, totp: values.totp });
 	}
 
@@ -46,12 +54,12 @@ export function Enable2FAForm() {
 		<>
 			<div className="flex flex-col justify-center">
 				<p className="text-center text-md text-green-400 font-semibold mb-4">
-					{twoFactorEnabled
+					{user.has_two_factor_auth
 						? "Two-factor authentication is enabled"
 						: ""}
 				</p>
 
-				{twoFactorEnabled ? (
+				{user.has_two_factor_auth ? (
 					<Button
 						type="button"
 						variant="destructive"
@@ -114,7 +122,7 @@ export function Enable2FAForm() {
 
 						<Form {...form}>
 							<form
-								onSubmit={form.handleSubmit(onSubmit)}
+								onSubmit={form.handleSubmit(handleEnableButton)}
 								className="space-y-2"
 							>
 								<FormField

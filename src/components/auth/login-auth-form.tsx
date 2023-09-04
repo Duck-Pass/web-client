@@ -57,6 +57,7 @@ export function LoginAuthForm() {
 								<FormControl>
 									<Input
 										placeholder="john@doe.ch"
+										autoComplete="username"
 										{...field}
 									/>
 								</FormControl>
@@ -71,7 +72,11 @@ export function LoginAuthForm() {
 							<FormItem>
 								<FormLabel>Password</FormLabel>
 								<FormControl>
-									<Input type="password" {...field} />
+									<Input
+										type="password"
+										autoComplete="current-password"
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
