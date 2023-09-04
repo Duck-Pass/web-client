@@ -13,20 +13,45 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import PasswordStrengthMeter from "@/components/vault/password-strength-meter";
+import { useContext } from "react";
+import { AuthContext } from "@/components/context/AuthContext";
 
-const formSchema = z.object({
-	oldPassword: z.string().min(8, {
-		message: "Password must be at least 8 characters.",
-	}),
-	newPassword: z.string().min(8, {
-		message: "Password must be at least 8 characters.",
-	}),
-	verifyPassword: z.string().min(8, {
-		message: "Password must be at least 8 characters.",
-	}),
-});
+const formSchema = z
+	.object({
+		oldPassword: z.string().min(1, {
+			message: "Password is required.",
+		}),
+		newPassword: z
+			.string()
+			.min(8, {
+				message: "Password must be at least 8 characters.",
+			})
+			.regex(/.*[A-Z].*/, {
+				message: "Password must contain at least one uppercase letter.",
+			})
+			.regex(/.*[\d].*/, {
+				message: "Password must contain at least one number.",
+			})
+			.regex(/.*[\W_].*/, {
+				message: "Password must contain at least one symbol.",
+			}),
+		verifyPassword: z.string().min(8, {
+			message: "Password must be at least 8 characters.",
+		}),
+	})
+	.superRefine(({ newPassword, verifyPassword }, ctx) => {
+		if (newPassword !== verifyPassword) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: "The password did not match",
+				path: ["verifyPassword"],
+			});
+		}
+	});
 
 export default function ProfilePasswordForm() {
+	const { updatePassword } = useContext(AuthContext);
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -37,7 +62,11 @@ export default function ProfilePasswordForm() {
 	});
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		console.log(values);
+		updatePassword({
+			oldPassword: values.oldPassword,
+			newPassword: values.newPassword,
+			verifyPassword: values.verifyPassword,
+		});
 	}
 
 	return (

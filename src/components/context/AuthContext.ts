@@ -5,7 +5,7 @@ type User = {
 	email: string;
 	symmetric_key: string;
 	has_two_factor_auth: boolean;
-	vault?: string;
+	hash_master_key: string;
 };
 
 type AuthKey = {
@@ -23,10 +23,19 @@ type IAuthContext = {
 		totp?: string;
 	}) => void;
 	isTokenExpired(): boolean;
-	logout: () => void;
+	logout: (doSync: boolean) => void;
 	genAuthKey: () => void;
 	enable2FA: (payload: { authKey: string; totp: string }) => void;
 	disable2FA: () => void;
+	updateEmail: (payload: {
+		newEmail: string;
+		currentPassword: string;
+	}) => void;
+	updatePassword: (payload: {
+		oldPassword: string;
+		newPassword: string;
+		verifyPassword: string;
+	}) => void;
 	clearState: () => void;
 };
 
@@ -37,7 +46,7 @@ const defaultValues = {
 		email: "",
 		symmetric_key: "",
 		has_two_factor_auth: false,
-		vault: "",
+		hash_master_key: "",
 	},
 	authKey: {
 		authKey: "",
@@ -50,6 +59,8 @@ const defaultValues = {
 	genAuthKey: async () => {},
 	enable2FA: async () => {},
 	disable2FA: async () => {},
+	updateEmail: async () => {},
+	updatePassword: async () => {},
 };
 
 export const AuthContext = createContext<IAuthContext>(defaultValues);

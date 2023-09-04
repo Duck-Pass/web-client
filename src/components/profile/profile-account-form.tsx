@@ -12,26 +12,37 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useContext } from "react";
+import { AuthContext } from "@/components/context/AuthContext";
 
 const formSchema = z.object({
-	email: z
+	newEmail: z
 		.string()
 		.email({
 			message: "Invalid email address",
 		})
 		.trim(),
+	currentPassword: z.string().min(1, {
+		message: "Password is required",
+	}),
 });
 
 export default function ProfileAccountForm() {
+	const { updateEmail } = useContext(AuthContext);
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			email: "",
+			newEmail: "",
+			currentPassword: "",
 		},
 	});
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		console.log(values);
+		updateEmail({
+			newEmail: values.newEmail,
+			currentPassword: values.currentPassword,
+		});
 	}
 
 	return (
@@ -39,12 +50,25 @@ export default function ProfileAccountForm() {
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
 				<FormField
 					control={form.control}
-					name="email"
+					name="newEmail"
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Email</FormLabel>
 							<FormControl>
 								<Input placeholder="john@doe.ch" {...field} />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="currentPassword"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Current password</FormLabel>
+							<FormControl>
+								<Input type="password" {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
