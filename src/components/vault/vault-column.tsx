@@ -65,6 +65,10 @@ export const columns: ColumnDef<Credential>[] = [
 		header: "Authenticator Key (TOTP)",
 	},
 	{
+		accessorKey: "website",
+		header: "Website",
+	},
+	{
 		accessorKey: "note",
 		header: "Note",
 	},
