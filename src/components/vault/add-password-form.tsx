@@ -26,7 +26,7 @@ import { VaultContext } from "../context/VaultContext";
 import { useContext } from "react";
 
 const formSchema = z.object({
-	name: z.string().trim().min(5),
+	name: z.string().trim().min(1),
 	username: z.string().trim(),
 	password: z.string().min(8),
 	note: z.string().optional(),
