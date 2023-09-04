@@ -20,9 +20,6 @@ export const AuthContextProvider = ({ children }: Props) => {
 	});
 
 	const [error, setError] = useState("");
-	const [twoFactorEnabled, setTwoFactorEnabled] = useState(
-		user?.has_two_factor_auth ? user.has_two_factor_auth : false,
-	);
 	const [authKey, setAuthKey] = useState({ authKey: "", url: "" });
 	const { updateVault } = useContext(VaultContext);
 
@@ -31,7 +28,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 	const login = async (payload: {
 		username: string;
 		password: string;
-		totp?: number;
+		totp?: string;
 	}) => {
 		const primitives = new WebCryptoPrimitivesService(window);
 		const encryptionService = new WebCryptoEncryptionService(primitives);
@@ -59,7 +56,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 			? {
 					email: payload.username,
 					key_hash: hashMasterKey,
-					totp_code: payload.totp.toString(),
+					totp_code: payload.totp,
 			  }
 			: { username: payload.username, password: hashMasterKey };
 
@@ -201,7 +198,6 @@ export const AuthContextProvider = ({ children }: Props) => {
 		localStorage.removeItem("userProfile");
 		VaultManager.reset();
 		setUser({});
-		setTwoFactorEnabled(false);
 		setAuthKey({ authKey: "", url: "" });
 	};
 	const genAuthKey = async () => {
@@ -216,7 +212,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 		setError("");
 		setAuthKey({ authKey: data.auth_key, url: data.url });
 	};
-	const enable2FA = async (payload: { authKey: string; totp: number }) => {
+	const enable2FA = async (payload: { authKey: string; totp: string }) => {
 		const token = localStorage.getItem("token");
 		const twoFactorParams = {
 			auth_key: payload.authKey,
@@ -244,7 +240,23 @@ export const AuthContextProvider = ({ children }: Props) => {
 		}
 
 		if (response.status === 200) {
-			setTwoFactorEnabled(true);
+			// Set the has_two_factor_auth to true in the local storage
+			localStorage.setItem(
+				"userProfile",
+				JSON.stringify({
+					id: user.id,
+					email: user.email,
+					symmetric_key: user.symmetric_key,
+					has_two_factor_auth: true,
+				}),
+			);
+			// Update the user state for the view
+			setUser({
+				id: user.id,
+				email: user.email,
+				symmetric_key: user.symmetric_key,
+				has_two_factor_auth: true,
+			});
 			return;
 		}
 
@@ -269,7 +281,23 @@ export const AuthContextProvider = ({ children }: Props) => {
 
 		if (response.status === 200) {
 			setError("");
-			setTwoFactorEnabled(false);
+			// Set the has_two_factor_auth to true in the local storage
+			localStorage.setItem(
+				"userProfile",
+				JSON.stringify({
+					id: user.id,
+					email: user.email,
+					symmetric_key: user.symmetric_key,
+					has_two_factor_auth: false,
+				}),
+			);
+			// Update the user state for the view
+			setUser({
+				id: user.id,
+				email: user.email,
+				symmetric_key: user.symmetric_key,
+				has_two_factor_auth: false,
+			});
 			return;
 		}
 	};
@@ -280,7 +308,6 @@ export const AuthContextProvider = ({ children }: Props) => {
 				value={{
 					user,
 					error,
-					twoFactorEnabled,
 					authKey,
 					login,
 					logout,

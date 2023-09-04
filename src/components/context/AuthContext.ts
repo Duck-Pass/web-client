@@ -4,7 +4,7 @@ type User = {
 	id: number;
 	email: string;
 	symmetric_key: string;
-	two_factor_auth_enabled: boolean;
+	has_two_factor_auth: boolean;
 	vault?: string;
 };
 
@@ -16,17 +16,16 @@ type AuthKey = {
 type IAuthContext = {
 	user: User;
 	error: string;
-	twoFactorEnabled: boolean;
 	authKey: AuthKey;
 	login: (payload: {
 		username: string;
 		password: string;
-		totp?: number;
+		totp?: string;
 	}) => void;
 	isTokenExpired(): boolean;
 	logout: () => void;
 	genAuthKey: () => void;
-	enable2FA: (payload: { authKey: string; totp: number }) => void;
+	enable2FA: (payload: { authKey: string; totp: string }) => void;
 	disable2FA: () => void;
 	clearState: () => void;
 };
@@ -37,10 +36,9 @@ const defaultValues = {
 		id: 0,
 		email: "",
 		symmetric_key: "",
-		two_factor_auth_enabled: false,
+		has_two_factor_auth: false,
 		vault: "",
 	},
-	twoFactorEnabled: false,
 	authKey: {
 		authKey: "",
 		url: "",
