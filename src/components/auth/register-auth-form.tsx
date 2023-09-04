@@ -85,9 +85,9 @@ export function RegisterAuthForm({
 		const [_, encryptedKey] = await cryptoService.makeUserKey(masterKey1);
 		const payload = {
 			email: values.email,
-			keyHash: hashMasterKey1,
-			keyHashConf: hashMasterKey2,
-			symmetricKeyEncrypted: encryptedKey.toJSON(),
+			key_hash: hashMasterKey1,
+			key_hash_conf: hashMasterKey2,
+			symmetric_key_encrypted: encryptedKey.toJSON(),
 		};
 
 		const response = await fetch(env.api + "/register", {

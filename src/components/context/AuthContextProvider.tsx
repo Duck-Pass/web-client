@@ -21,7 +21,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 
 	const [error, setError] = useState("");
 	const [twoFactorEnabled, setTwoFactorEnabled] = useState(
-		user?.hasTwoFactorAuth ? user.hasTwoFactorAuth : false,
+		user?.has_two_factor_auth ? user.has_two_factor_auth : false,
 	);
 	const [authKey, setAuthKey] = useState({ authKey: "", url: "" });
 	const { updateVault } = useContext(VaultContext);
@@ -51,18 +51,17 @@ export const AuthContextProvider = ({ children }: Props) => {
 			? env.api + "/check_two_factor_auth"
 			: env.api + "/token";
 
-		const credentials: {
-			username: string;
-			password: string;
-			totp_code?: string;
-		} = {
-			username: payload.username,
-			password: hashMasterKey,
-		};
+		let credentials:
+			| { username: string; password: string }
+			| { email: string; key_hash: string; totp_code: string };
 
-		if (payload.totp) {
-			credentials.totp_code = payload.totp.toString();
-		}
+		credentials = payload.totp
+			? {
+					email: payload.username,
+					key_hash: hashMasterKey,
+					totp_code: payload.totp.toString(),
+			  }
+			: { username: payload.username, password: hashMasterKey };
 
 		const responseToken = await fetch(authUrl, {
 			method: "POST",
@@ -133,7 +132,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 
 		if (response.ok) {
 			const encryptedKey = new EncryptedString(
-				data.symmetricKeyEncrypted as EncString,
+				data.symmetric_key_encrypted as EncString,
 			);
 			const userKey = await cryptoService.decryptUserKey(
 				masterKey,
@@ -146,6 +145,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 					id: data.id,
 					email: data.email,
 					symmetric_key: userKey.toJSON(),
+					has_two_factor_auth: data.has_two_factor_auth,
 				}),
 			);
 
@@ -214,7 +214,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 		});
 		const data = await response.json();
 		setError("");
-		setAuthKey(data);
+		setAuthKey({ authKey: data.auth_key, url: data.url });
 	};
 	const enable2FA = async (payload: { authKey: string; totp: number }) => {
 		const token = localStorage.getItem("token");
