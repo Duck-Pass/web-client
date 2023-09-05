@@ -31,6 +31,7 @@ const formSchema = z.object({
 	password: z.string().min(8),
 	note: z.string().optional(),
 	authKey: z.string().optional(),
+	website: z.string().url(),
 });
 
 export function AddPasswordForm({
@@ -48,6 +49,7 @@ export function AddPasswordForm({
 			password: "",
 			note: "",
 			authKey: "",
+			website: "",
 		},
 	});
 
@@ -65,6 +67,7 @@ export function AddPasswordForm({
 			password: values.password,
 			authKey: values.authKey ?? "",
 			note: values.note ?? "",
+			website: values.website ?? "",
 			favorite: false,
 		});
 
@@ -109,6 +112,10 @@ export function AddPasswordForm({
 						</FormItem>
 					)}
 				/>
+				<p className="text-sm text-muted-foreground mb-2">
+					Only account with an email provided in username can be
+					verified for breaches.
+				</p>
 				<FormField
 					control={form.control}
 					name="password"
@@ -146,6 +153,22 @@ export function AddPasswordForm({
 							<PasswordStrengthMeter
 								password={form.getValues().password}
 							/>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="website"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Website</FormLabel>
+							<FormControl>
+								<Input
+									placeholder="https://www.duckpass.ch"
+									{...field}
+								/>
+							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}

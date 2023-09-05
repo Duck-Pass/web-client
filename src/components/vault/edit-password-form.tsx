@@ -27,6 +27,7 @@ const formSchema = z.object({
 	name: z.string().trim().min(5),
 	username: z.string().trim(),
 	password: z.string().min(8),
+	website: z.string().url(),
 	note: z.string().optional(),
 	authKey: z.string().optional(),
 });
@@ -39,6 +40,7 @@ export function EditPasswordForm(props: PasswordModalProps) {
 			name: props.cred.name,
 			username: props.cred.username,
 			password: props.cred.password,
+			website: props.cred.website,
 			note: props.cred.note,
 			authKey: props.cred.authKey,
 		},
@@ -58,6 +60,7 @@ export function EditPasswordForm(props: PasswordModalProps) {
 			name: values.name,
 			username: values.username,
 			password: values.password,
+			website: values.website,
 			authKey: values.authKey ?? "",
 			note: values.note ?? "",
 		});
@@ -114,6 +117,22 @@ export function EditPasswordForm(props: PasswordModalProps) {
 							<PasswordStrengthMeter
 								password={form.getValues().password}
 							/>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="website"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Website</FormLabel>
+							<FormControl>
+								<Input
+									placeholder="https://www.google.com"
+									{...field}
+								/>
+							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}
