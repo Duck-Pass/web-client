@@ -6,7 +6,8 @@ export type Credential = {
 	authKey: string;
 	note: string;
 	website: string;
-	favorite?: boolean;
+	favorite: boolean;
+	breached: boolean;
 };
 
 import { BufferUtils } from "../BufferUtils";
@@ -91,9 +92,6 @@ export class VaultManager {
 	public async editItem(item: Credential) {
 		VaultManager.vault = VaultManager.vault.map(i => {
 			if (i.id === item.id) {
-				if (!i.favorite && !item.favorite) {
-					item.favorite = false;
-				}
 				return item;
 			}
 			return i;

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Transition } from "@headlessui/react";
 import PasswordBreachLogo from "../assets/spy.png";
 import MFAlogo from "../assets/2fa.png";

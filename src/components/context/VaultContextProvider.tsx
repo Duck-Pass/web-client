@@ -36,7 +36,10 @@ export const VaultContextProvider = ({ children }: Props) => {
 					Authorization: `Bearer ${token}`,
 				},
 			},
-		);
+		).catch(() => {
+			setBreachLimit(false);
+			return;
+		});
 
 		if (!response) {
 			setBreachLimit(false);

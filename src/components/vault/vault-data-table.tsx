@@ -45,6 +45,7 @@ export function VaultDataTable<TData, TValue>({
 			password: false,
 			authKey: false,
 			note: false,
+			breached: false,
 		});
 
 	const table = useReactTable({
@@ -114,6 +115,11 @@ export function VaultDataTable<TData, TValue>({
 							{table.getRowModel().rows?.length ? (
 								table.getRowModel().rows.map(row => (
 									<TableRow
+										className={
+											row.getValue("breached")
+												? "bg-red-200 hover:bg-red-300"
+												: ""
+										}
 										key={row.id}
 										data-state={
 											row.getIsSelected() && "selected"

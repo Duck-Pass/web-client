@@ -63,6 +63,11 @@ export function EditPasswordForm(props: PasswordModalProps) {
 			website: values.website,
 			authKey: values.authKey ?? "",
 			note: values.note ?? "",
+			favorite: props.cred.favorite,
+			breached:
+				values.username == props.cred.username
+					? props.cred.breached
+					: false,
 		});
 
 		updateVault(manager.getVault());
@@ -163,6 +168,7 @@ export function EditPasswordForm(props: PasswordModalProps) {
 						</FormItem>
 					)}
 				/>
+
 				<div className="flex flex-col w-full mt-2">
 					<Button type="submit">Edit password</Button>
 				</div>
