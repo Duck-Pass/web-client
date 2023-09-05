@@ -32,6 +32,7 @@ import { Credential, VaultManager } from "@/lib/models/vault";
 import { VaultContext } from "../context/VaultContext";
 import { useContext } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import totp from "totp-generator";
 
 export const columns: ColumnDef<Credential>[] = [
 	{
@@ -218,7 +219,10 @@ export const columns: ColumnDef<Credential>[] = [
 								</DropdownMenuItem>
 								<DropdownMenuItem
 									className="hover:cursor-pointer"
-									onClick={() => copy(cred.authKey)}
+									onClick={() => {
+										if (!cred.authKey) return;
+										copy(totp(cred.authKey));
+									}}
 								>
 									<Clock className="text-gray-500 mr-2 w-4" />
 									Copy TOTP
