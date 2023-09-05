@@ -4,13 +4,14 @@ import * as uuid from "uuid";
 jest.mock("uuid");
 
 describe("VaultManager", () => {
-	const exampleVaultJson = `[{"id":"00000000-0000-0000-0000-000000000000","name":"name","username":"username","password":"password","authKey":"authKey","note":"note","favorite":false}]`;
+	const exampleVaultJson = `[{"id":"00000000-0000-0000-0000-000000000000","name":"name","username":"username","password":"password","website":"https://www.duckpass.ch","authKey":"authKey","note":"note","favorite":false}]`;
 
 	const exampleVaultCredential = {
 		id: "00000000-0000-0000-0000-000000000000",
 		name: "name",
 		username: "username",
 		password: "password",
+		website: "https://www.duckpass.ch",
 		authKey: "authKey",
 		note: "note",
 		favorite: false,

@@ -23,7 +23,7 @@ type IAuthContext = {
 		totp?: string;
 	}) => void;
 	isTokenExpired(): boolean;
-	logout: (doSync: boolean) => void;
+	logout: (doSync?: boolean) => void;
 	genAuthKey: () => void;
 	enable2FA: (payload: { authKey: string; totp: string }) => void;
 	disable2FA: () => void;
