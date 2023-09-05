@@ -5,7 +5,7 @@ export type Credential = {
 	password: string;
 	authKey: string;
 	note: string;
-	website?: string;
+	website: string;
 	favorite?: boolean;
 };
 

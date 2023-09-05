@@ -8,6 +8,7 @@ import {
 	Trash,
 	Pen,
 	Star,
+	CheckCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import copy from "copy-to-clipboard";
@@ -30,6 +31,7 @@ import { EditPasswordForm } from "./edit-password-form";
 import { Credential, VaultManager } from "@/lib/models/vault";
 import { VaultContext } from "../context/VaultContext";
 import { useContext } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 export const columns: ColumnDef<Credential>[] = [
 	{
@@ -101,6 +103,7 @@ export const columns: ColumnDef<Credential>[] = [
 							name: row.getValue("name"),
 							username: row.getValue("username"),
 							password: row.getValue("password"),
+							website: row.getValue("website"),
 							authKey: row.getValue("authKey"),
 							note: row.getValue("note"),
 							favorite: fav,
@@ -118,7 +121,45 @@ export const columns: ColumnDef<Credential>[] = [
 		enableHiding: false,
 		cell: ({ row }) => {
 			const cred = row.original;
-			const { updateVault } = useContext(VaultContext);
+			const { updateVault, checkBreach, breachLimit } =
+				useContext(VaultContext);
+			const { toast } = useToast();
+
+			function isValidEmail(email: string) {
+				return /\S+@\S+\.\S+/.test(email);
+			}
+
+			async function checkForBreach(email: string, domain: string) {
+				// Check the breach limit rate to avoid spamming HIBP API
+				if (!breachLimit) {
+					const breach = await checkBreach({
+						email: email,
+						domain: domain,
+					});
+
+					if (!breach) {
+						toast({
+							description:
+								"Something went wrong, please try again later.",
+						});
+						return;
+					}
+
+					if (breach !== "Breaches found") {
+						toast({
+							description:
+								"Your email/password seem to be secure on this website.",
+						});
+						return;
+					}
+
+					toast({
+						variant: "destructive",
+						description:
+							"Your email/password are leaked! Please change them!",
+					});
+				}
+			}
 
 			return (
 				<>
@@ -132,10 +173,10 @@ export const columns: ColumnDef<Credential>[] = [
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
 								<DropdownMenuLabel>Actions</DropdownMenuLabel>
-								<DropdownMenuItem className="hover:cursor-pointer">
+								<DropdownMenuItem className="hover:cursor-pointer p-0">
 									<DialogTrigger
 										asChild
-										className="w-full p-0"
+										className="w-full text-left"
 									>
 										<Button variant="ghost">
 											<Pen className="text-gray-500 mr-2 w-4" />
@@ -143,6 +184,23 @@ export const columns: ColumnDef<Credential>[] = [
 										</Button>
 									</DialogTrigger>
 								</DropdownMenuItem>
+								{isValidEmail(cred.username) ? (
+									<DropdownMenuItem
+										className="hover:cursor-pointer"
+										onClick={() =>
+											checkForBreach(
+												cred.username,
+												cred.website,
+											)
+										}
+										disabled={breachLimit}
+									>
+										<CheckCircle className="text-gray-500 mr-2 w-4" />
+										Verify
+									</DropdownMenuItem>
+								) : (
+									""
+								)}
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
 									className="hover:cursor-pointer"

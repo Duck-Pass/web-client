@@ -51,14 +51,6 @@ export default function LoginPage() {
 								Sign up
 							</Link>
 							<br />
-							Password forgotten?{" "}
-							<Link
-								to="/reset-password"
-								className=" text-blue-600 hover:underline"
-							>
-								Click here
-							</Link>
-							!
 						</p>
 					</CardFooter>
 				</Card>
