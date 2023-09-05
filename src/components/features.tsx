@@ -9,15 +9,6 @@ export default function Features() {
 
 	const tabs = useRef<HTMLDivElement>(null);
 
-	const heightFix = () => {
-		if (tabs.current && tabs.current.parentElement)
-			tabs.current.parentElement.style.height = `${tabs.current.clientHeight}px`;
-	};
-
-	useEffect(() => {
-		heightFix();
-	}, []);
-
 	return (
 		<section className="relative">
 			{/* Section background (needs .relative class on parent and next sibling elements) */}
@@ -170,11 +161,16 @@ export default function Features() {
 								>
 									<div>
 										<div className="font-bold leading-snug tracking-tight mb-1">
-											Simplicity
+											Zero-knowledge
 										</div>
 										<div className="text-gray-600">
-											Don't blow your mind and embrace
-											this ducky simplicity!
+											Explore our revolutionary
+											'zero-knowledge' feature that
+											ensures absolute security, allowing
+											your data to remain confidential
+											even if our database is exposed,
+											without ever revealing any passwords
+											or email in your vault.
 										</div>
 									</div>
 									<div className="flex justify-center items-center w-8 h-8 bg-white rounded-full shadow flex-shrink-0 ml-3">
@@ -183,7 +179,7 @@ export default function Features() {
 											height="1em"
 											viewBox="0 0 576 512"
 										>
-											<path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z" />
+											<path d="M288 64C64 64 0 160 0 272S80 448 176 448h8.4c24.2 0 46.4-13.7 57.2-35.4l23.2-46.3c4.4-8.8 13.3-14.3 23.2-14.3s18.8 5.5 23.2 14.3l23.2 46.3c10.8 21.7 33 35.4 57.2 35.4H400c96 0 176-64 176-176s-64-208-288-208zM96 256a64 64 0 1 1 128 0A64 64 0 1 1 96 256zm320-64a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" />
 										</svg>
 									</div>
 								</a>
@@ -192,7 +188,7 @@ export default function Features() {
 
 						{/* Tabs items */}
 						<div className="max-w-xl md:max-w-none md:w-full mx-auto md:col-span-5 lg:col-span-6 mb-8 md:mb-0 md:order-1">
-							<div className="transition-all">
+							<div className="transition-all h-auto">
 								<div
 									className="relative flex flex-col text-center lg:text-right"
 									ref={tabs}
@@ -208,15 +204,12 @@ export default function Features() {
 										leave="transition ease-in-out duration-300 transform absolute"
 										leaveFrom="opacity-100 translate-y-0"
 										leaveTo="opacity-0 -translate-y-16"
-										beforeEnter={() => heightFix()}
 										unmount={false}
 									>
 										<div className="relative inline-flex flex-col">
 											<img
 												className="w-2/3 mx-auto rounded"
 												src={PasswordBreachLogo}
-												width={512}
-												height="362"
 												alt="Shield logo"
 											/>
 										</div>
@@ -232,15 +225,12 @@ export default function Features() {
 										leave="transition ease-in-out duration-300 transform absolute"
 										leaveFrom="opacity-100 translate-y-0"
 										leaveTo="opacity-0 -translate-y-16"
-										beforeEnter={() => heightFix()}
 										unmount={false}
 									>
 										<div className="relative inline-flex flex-col">
 											<img
 												className="w-2/3 mx-auto rounded"
 												src={MFAlogo}
-												width={500}
-												height="462"
 												alt="MFA image"
 											/>
 										</div>
@@ -256,15 +246,12 @@ export default function Features() {
 										leave="transition ease-in-out duration-300 transform absolute"
 										leaveFrom="opacity-100 translate-y-0"
 										leaveTo="opacity-0 -translate-y-16"
-										beforeEnter={() => heightFix()}
 										unmount={false}
 									>
 										<div className="relative inline-flex flex-col">
 											<img
 												className="w-2/3 mx-auto rounded"
 												src={RubberDuck}
-												width={512}
-												height="362"
 												alt="Shield logo"
 											/>
 										</div>
