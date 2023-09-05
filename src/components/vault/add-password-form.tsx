@@ -69,6 +69,7 @@ export function AddPasswordForm({
 			note: values.note ?? "",
 			website: values.website ?? "",
 			favorite: false,
+			breached: false,
 		});
 
 		openOnChange(false);

@@ -108,6 +108,7 @@ export const columns: ColumnDef<Credential>[] = [
 							authKey: row.getValue("authKey"),
 							note: row.getValue("note"),
 							favorite: fav,
+							breached: row.getValue("breached"),
 						});
 						updateVault(manager.getVault());
 					}}
@@ -116,6 +117,10 @@ export const columns: ColumnDef<Credential>[] = [
 				/>
 			);
 		},
+	},
+	{
+		accessorKey: "breached",
+		header: "Breached",
 	},
 	{
 		id: "actions",
@@ -146,19 +151,37 @@ export const columns: ColumnDef<Credential>[] = [
 						return;
 					}
 
+					let breached = false;
 					if (breach !== "Breaches found") {
 						toast({
 							description:
 								"Your email/password seem to be secure on this website.",
 						});
-						return;
+					} else {
+						breached = true;
+						toast({
+							title: "Warning",
+							variant: "destructive",
+							description:
+								"Your email/password are leaked! Please change them!",
+						});
 					}
 
-					toast({
-						variant: "destructive",
-						description:
-							"Your email/password are leaked! Please change them!",
+					// update the password properties
+					const id: string = row.getValue("id");
+					const manager = VaultManager.getInstance();
+					manager.editItem({
+						id: id,
+						name: row.getValue("name"),
+						username: row.getValue("username"),
+						password: row.getValue("password"),
+						website: row.getValue("website"),
+						authKey: row.getValue("authKey"),
+						note: row.getValue("note"),
+						favorite: row.getValue("favorite"),
+						breached: breached,
 					});
+					updateVault(manager.getVault());
 				}
 			}
 
