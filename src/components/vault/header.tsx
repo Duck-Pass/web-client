@@ -13,6 +13,7 @@ import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import DuckUserIcon from "@/assets/duck-user-icon.png";
 
 export default function Header() {
 	const { logout } = useContext(AuthContext);
@@ -45,7 +46,7 @@ export default function Header() {
 						<DropdownMenu>
 							<DropdownMenuTrigger>
 								<Avatar>
-									<AvatarImage src="https://github.com/shadcn.png" />
+									<AvatarImage src={DuckUserIcon} />
 									<AvatarFallback>CN</AvatarFallback>
 								</Avatar>
 							</DropdownMenuTrigger>

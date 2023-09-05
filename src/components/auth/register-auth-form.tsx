@@ -25,10 +25,22 @@ const formSchema = z
 			.email({
 				message: "Invalid email address",
 			})
-			.trim(),
-		password: z.string().min(8, {
-			message: "Password must be at least 8 characters.",
-		}),
+			.trim()
+			.toLowerCase(),
+		password: z
+			.string()
+			.min(8, {
+				message: "Password must be at least 8 characters.",
+			})
+			.regex(/.*[A-Z].*/, {
+				message: "Password must contain at least one uppercase letter.",
+			})
+			.regex(/.*[\d].*/, {
+				message: "Password must contain at least one number.",
+			})
+			.regex(/.*[\W_].*/, {
+				message: "Password must contain at least one symbol.",
+			}),
 		verifyPassword: z.string().min(8, {
 			message: "Password must be at least 8 characters.",
 		}),

@@ -5,7 +5,9 @@ export type Credential = {
 	password: string;
 	authKey: string;
 	note: string;
-	favorite?: boolean;
+	website: string;
+	favorite: boolean;
+	breached: boolean;
 };
 
 import { BufferUtils } from "../BufferUtils";
@@ -14,6 +16,7 @@ import { WebCryptoPrimitivesService } from "../services/webcrypto-primitives.ser
 import { SymmetricCryptoKey, UserKey } from "./symmetric-crypto-key";
 import { v4 as uuid } from "uuid";
 import env from "../../env.json";
+import { EncryptedString } from "./encrypted-string";
 
 export type Vault = Credential[];
 
@@ -89,9 +92,6 @@ export class VaultManager {
 	public async editItem(item: Credential) {
 		VaultManager.vault = VaultManager.vault.map(i => {
 			if (i.id === item.id) {
-				if (!i.favorite && !item.favorite) {
-					item.favorite = false;
-				}
 				return item;
 			}
 			return i;
@@ -133,6 +133,22 @@ export class VaultManager {
 			});
 			localStorage.setItem("vault", jsonVault);
 		}
+	}
+
+	public async encrypt(userKey: UserKey): Promise<EncryptedString | null> {
+		const jsonVault = JSON.stringify(VaultManager.vault);
+		if (jsonVault && VaultManager.key) {
+			const primitives = new WebCryptoPrimitivesService(window);
+			const encryptionService = new WebCryptoEncryptionService(
+				primitives,
+			);
+			const encryptedVault = await encryptionService.encrypt(
+				jsonVault,
+				userKey,
+			);
+			return encryptedVault;
+		}
+		return null;
 	}
 
 	public scheduleLock(timeout: number) {

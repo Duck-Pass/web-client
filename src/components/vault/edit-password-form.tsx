@@ -27,6 +27,7 @@ const formSchema = z.object({
 	name: z.string().trim().min(5),
 	username: z.string().trim(),
 	password: z.string().min(8),
+	website: z.string().url(),
 	note: z.string().optional(),
 	authKey: z.string().optional(),
 });
@@ -39,6 +40,7 @@ export function EditPasswordForm(props: PasswordModalProps) {
 			name: props.cred.name,
 			username: props.cred.username,
 			password: props.cred.password,
+			website: props.cred.website,
 			note: props.cred.note,
 			authKey: props.cred.authKey,
 		},
@@ -58,8 +60,14 @@ export function EditPasswordForm(props: PasswordModalProps) {
 			name: values.name,
 			username: values.username,
 			password: values.password,
+			website: values.website,
 			authKey: values.authKey ?? "",
 			note: values.note ?? "",
+			favorite: props.cred.favorite,
+			breached:
+				values.username == props.cred.username
+					? props.cred.breached
+					: false,
 		});
 
 		updateVault(manager.getVault());
@@ -120,6 +128,22 @@ export function EditPasswordForm(props: PasswordModalProps) {
 				/>
 				<FormField
 					control={form.control}
+					name="website"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Website</FormLabel>
+							<FormControl>
+								<Input
+									placeholder="https://www.google.com"
+									{...field}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
 					name="note"
 					render={({ field }) => (
 						<FormItem>
@@ -144,6 +168,7 @@ export function EditPasswordForm(props: PasswordModalProps) {
 						</FormItem>
 					)}
 				/>
+
 				<div className="flex flex-col w-full mt-2">
 					<Button type="submit">Edit password</Button>
 				</div>

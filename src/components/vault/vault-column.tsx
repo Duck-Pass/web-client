@@ -8,6 +8,7 @@ import {
 	Trash,
 	Pen,
 	Star,
+	CheckCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import copy from "copy-to-clipboard";
@@ -30,6 +31,7 @@ import { EditPasswordForm } from "./edit-password-form";
 import { Credential, VaultManager } from "@/lib/models/vault";
 import { VaultContext } from "../context/VaultContext";
 import { useContext } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import totp from "totp-generator";
 
 export const columns: ColumnDef<Credential>[] = [
@@ -66,6 +68,10 @@ export const columns: ColumnDef<Credential>[] = [
 		header: "Authenticator Key (TOTP)",
 	},
 	{
+		accessorKey: "website",
+		header: "Website",
+	},
+	{
 		accessorKey: "note",
 		header: "Note",
 	},
@@ -98,9 +104,11 @@ export const columns: ColumnDef<Credential>[] = [
 							name: row.getValue("name"),
 							username: row.getValue("username"),
 							password: row.getValue("password"),
+							website: row.getValue("website"),
 							authKey: row.getValue("authKey"),
 							note: row.getValue("note"),
 							favorite: fav,
+							breached: row.getValue("breached"),
 						});
 						updateVault(manager.getVault());
 					}}
@@ -111,11 +119,71 @@ export const columns: ColumnDef<Credential>[] = [
 		},
 	},
 	{
+		accessorKey: "breached",
+		header: "Breached",
+	},
+	{
 		id: "actions",
 		enableHiding: false,
 		cell: ({ row }) => {
 			const cred = row.original;
-			const { updateVault } = useContext(VaultContext);
+			const { updateVault, checkBreach, breachLimit } =
+				useContext(VaultContext);
+			const { toast } = useToast();
+
+			function isValidEmail(email: string) {
+				return /\S+@\S+\.\S+/.test(email);
+			}
+
+			async function checkForBreach(email: string, domain: string) {
+				// Check the breach limit rate to avoid spamming HIBP API
+				if (!breachLimit) {
+					const breach = await checkBreach({
+						email: email,
+						domain: domain,
+					});
+
+					if (!breach) {
+						toast({
+							description:
+								"Something went wrong, please try again later.",
+						});
+						return;
+					}
+
+					let breached = false;
+					if (breach !== "Breaches found") {
+						toast({
+							description:
+								"Your email/password seem to be secure on this website.",
+						});
+					} else {
+						breached = true;
+						toast({
+							title: "Warning",
+							variant: "destructive",
+							description:
+								"Your email/password are leaked! Please change them!",
+						});
+					}
+
+					// update the password properties
+					const id: string = row.getValue("id");
+					const manager = VaultManager.getInstance();
+					manager.editItem({
+						id: id,
+						name: row.getValue("name"),
+						username: row.getValue("username"),
+						password: row.getValue("password"),
+						website: row.getValue("website"),
+						authKey: row.getValue("authKey"),
+						note: row.getValue("note"),
+						favorite: row.getValue("favorite"),
+						breached: breached,
+					});
+					updateVault(manager.getVault());
+				}
+			}
 
 			return (
 				<>
@@ -129,10 +197,10 @@ export const columns: ColumnDef<Credential>[] = [
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
 								<DropdownMenuLabel>Actions</DropdownMenuLabel>
-								<DropdownMenuItem className="hover:cursor-pointer">
+								<DropdownMenuItem className="hover:cursor-pointer p-0">
 									<DialogTrigger
 										asChild
-										className="w-full p-0"
+										className="w-full text-left"
 									>
 										<Button variant="ghost">
 											<Pen className="text-gray-500 mr-2 w-4" />
@@ -140,6 +208,23 @@ export const columns: ColumnDef<Credential>[] = [
 										</Button>
 									</DialogTrigger>
 								</DropdownMenuItem>
+								{isValidEmail(cred.username) ? (
+									<DropdownMenuItem
+										className="hover:cursor-pointer"
+										onClick={() =>
+											checkForBreach(
+												cred.username,
+												cred.website,
+											)
+										}
+										disabled={breachLimit}
+									>
+										<CheckCircle className="text-gray-500 mr-2 w-4" />
+										Verify
+									</DropdownMenuItem>
+								) : (
+									""
+								)}
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
 									className="hover:cursor-pointer"
