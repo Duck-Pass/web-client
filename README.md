@@ -9,7 +9,7 @@ Install packages
 ```
 npm install
 ```
-
+Run the environment:
 ```
 npm run dev
 ```
