@@ -6,16 +6,16 @@ type IVaultContext = {
 	breachLimit: boolean;
 	updateVault: (data: Vault) => void;
 	checkBreach: (payload: {
+		password: string;
 		email: string;
-		domain: string;
-	}) => Promise<string | null>;
+	}) => Promise<number | null>;
 };
 
 const defaultValues = {
 	vault: [],
 	breachLimit: false,
 	updateVault: async () => {},
-	checkBreach: async () => "",
+	checkBreach: async () => 0,
 };
 
 export const VaultContext = createContext<IVaultContext>(defaultValues);

@@ -27,7 +27,7 @@ const formSchema = z.object({
 	name: z.string().trim().min(5),
 	username: z.string().trim(),
 	password: z.string().min(8),
-	website: z.string().url(),
+	website: z.string().url().optional(),
 	note: z.string().optional(),
 	authKey: z.string().optional(),
 });
@@ -60,12 +60,13 @@ export function EditPasswordForm(props: PasswordModalProps) {
 			name: values.name,
 			username: values.username,
 			password: values.password,
-			website: values.website,
+			website: values.website ?? "",
 			authKey: values.authKey ?? "",
 			note: values.note ?? "",
 			favorite: props.cred.favorite,
+			// Set breached to false in case of password modification
 			breached:
-				values.username == props.cred.username
+				values.password == props.cred.password
 					? props.cred.breached
 					: false,
 		});

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { VaultContext } from "./VaultContext";
 import { Vault, VaultManager } from "@/lib/models/vault";
 import env from "@/env.json";
+import { sha1 } from "crypto-hash";
 
 type Props = {
 	children: React.ReactNode;
@@ -21,15 +22,19 @@ export const VaultContextProvider = ({ children }: Props) => {
 		setVault(JSON.parse(JSON.stringify(v)));
 	};
 
-	const checkBreach = async (payload: { email: string; domain: string }) => {
-		setBreachLimit(true);
+	const checkBreach = async (payload: {
+		password: string;
+		email: string;
+	}) => {
 		const token = localStorage.getItem("token");
+		const passwordHash = (await sha1(payload.password)).toUpperCase();
 		const params = {
 			email: payload.email,
-			domain: payload.domain,
+			// Send 5 first characters of the SHA-1 hash of the password
+			hash_begin: passwordHash.substring(0, 5),
 		};
 		const response = await fetch(
-			env.api + "/hibp_breaches?" + new URLSearchParams(params),
+			env.api + "/hibp_password?" + new URLSearchParams(params),
 			{
 				headers: {
 					Accept: "application/json",
@@ -37,27 +42,33 @@ export const VaultContextProvider = ({ children }: Props) => {
 				},
 			},
 		).catch(() => {
-			setBreachLimit(false);
 			return;
 		});
 
 		if (!response) {
-			setBreachLimit(false);
 			return;
 		}
 
 		if (!response.ok) {
-			setBreachLimit(false);
 			return;
 		}
 
 		const data = await response.json();
+		const index = data.indexOf(passwordHash.substring(5));
+		const endLineIndex = data.indexOf("\r\n", index);
+		// Set the number of exposition of the password
+		const numberExposition =
+			index !== -1
+				? data.substring(index, endLineIndex).split(":")[1]
+				: 0;
+		setBreachLimit(true);
 
+		// Cannot use Verify button before waiting 6 seconds
 		setTimeout(() => {
 			setBreachLimit(false);
 		}, 6000);
 
-		return data.message;
+		return numberExposition;
 	};
 
 	return (
