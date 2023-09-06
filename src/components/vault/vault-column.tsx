@@ -135,39 +135,34 @@ export const columns: ColumnDef<Credential>[] = [
 				return /\S+@\S+\.\S+/.test(email);
 			}
 
-			async function checkForBreach(email: string, domain: string) {
+			async function checkForBreach(password: string, email: string) {
 				// Check the breach limit rate to avoid spamming HIBP API
 				if (!breachLimit) {
-					const breach = await checkBreach({
+					const numberExposition = await checkBreach({
+						password: password,
 						email: email,
-						domain: domain,
 					});
 
-					if (!breach) {
-						toast({
-							description:
-								"Something went wrong, please try again later.",
-						});
-						return;
-					}
-
 					let breached = false;
-					if (breach !== "Breaches found") {
-						toast({
-							description:
-								"Your email/password seem to be secure on this website.",
-						});
-					} else {
+
+					if (numberExposition !== 0) {
 						breached = true;
 						toast({
 							title: "Warning",
 							variant: "destructive",
 							description:
-								"Your email/password are leaked! Please change them!",
+								"Your password was exposed " +
+								numberExposition +
+								" times. Maybe change it!",
+						});
+					} else {
+						toast({
+							description:
+								"Your password doesn't seem to be exposed.",
 						});
 					}
 
-					// update the password properties
+					// Update the password properties
 					const id: string = row.getValue("id");
 					const manager = VaultManager.getInstance();
 					manager.editItem({
@@ -213,8 +208,8 @@ export const columns: ColumnDef<Credential>[] = [
 										className="hover:cursor-pointer"
 										onClick={() =>
 											checkForBreach(
+												cred.password,
 												cred.username,
-												cred.website,
 											)
 										}
 										disabled={breachLimit}

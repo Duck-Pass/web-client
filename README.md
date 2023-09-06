@@ -1,27 +1,49 @@
-# React + TypeScript + Vite
+# Launch the development environment
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+To launch the development environment you must have 
 
-Currently, two official plugins are available:
+- npm
+- Node.js >= 18.x
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+Install packages
+```
+npm install
+```
+Run the environment:
+```
+npm run dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+If you want to specify a particular port you can use the following command:
+```
+npx vite run --port=MY_PORT
+```
+
+If you ever need to modify the api endpoint, you can do so by modifing the `src/env.json` file:
+```json
+{
+    "api": "https://api-staging.duckpass.ch"
+}
+```
+
+# How to run tests
+
+Packages must be installed: `npm install`
+
+Run tests with `jest`:
+```
+npm run test
+```
+
+# How to build
+Packages must be installed: `npm install`
+
+```
+npm run build
+```
+
+The files will be then stored in the `dist/` directory.
+
+# How to Contribute
+
+Please refer to the `CONTRIBUTING.md` file.

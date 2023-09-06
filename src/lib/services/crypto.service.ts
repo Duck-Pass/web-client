@@ -61,7 +61,7 @@ export class CryptoService implements CryptoServiceAbstract {
 		return new SymmetricCryptoKey(decUserKey) as UserKey;
 	}
 
-	private async makeProtectedSymmetricKey<T extends SymmetricCryptoKey>(
+	async makeProtectedSymmetricKey<T extends SymmetricCryptoKey>(
 		encKey: SymmetricCryptoKey,
 		newSymkey: Uint8Array,
 	): Promise<[T, EncryptedString]> {

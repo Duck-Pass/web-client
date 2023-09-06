@@ -5,6 +5,9 @@ import { PrimitiveService } from "../abstractions/primitives.service";
 import { EncryptedObject } from "../models/encrypted-object";
 import { BufferUtils } from "../BufferUtils";
 
+/**
+ * @description this class implements the encryption service using the WebCrypto API
+ */
 export class WebCryptoEncryptionService implements EncryptionService {
 	constructor(protected primitiveService: PrimitiveService) {}
 
