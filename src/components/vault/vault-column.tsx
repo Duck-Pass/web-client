@@ -131,10 +131,6 @@ export const columns: ColumnDef<Credential>[] = [
 				useContext(VaultContext);
 			const { toast } = useToast();
 
-			function isValidEmail(email: string) {
-				return /\S+@\S+\.\S+/.test(email);
-			}
-
 			async function checkForBreach(password: string) {
 				// Check the breach limit rate to avoid spamming HIBP API
 				if (!breachLimit) {
@@ -202,20 +198,16 @@ export const columns: ColumnDef<Credential>[] = [
 										</Button>
 									</DialogTrigger>
 								</DropdownMenuItem>
-								{isValidEmail(cred.username) ? (
-									<DropdownMenuItem
-										className="hover:cursor-pointer"
-										onClick={() =>
-											checkForBreach(cred.password)
-										}
-										disabled={breachLimit}
-									>
-										<CheckCircle className="text-gray-500 mr-2 w-4" />
-										Verify
-									</DropdownMenuItem>
-								) : (
-									""
-								)}
+								<DropdownMenuItem
+									className="hover:cursor-pointer"
+									onClick={() =>
+										checkForBreach(cred.password)
+									}
+									disabled={breachLimit}
+								>
+									<CheckCircle className="text-gray-500 mr-2 w-4" />
+									Verify
+								</DropdownMenuItem>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
 									className="hover:cursor-pointer"
