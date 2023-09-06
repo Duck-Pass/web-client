@@ -135,12 +135,11 @@ export const columns: ColumnDef<Credential>[] = [
 				return /\S+@\S+\.\S+/.test(email);
 			}
 
-			async function checkForBreach(password: string, email: string) {
+			async function checkForBreach(password: string) {
 				// Check the breach limit rate to avoid spamming HIBP API
 				if (!breachLimit) {
 					const numberExposition = await checkBreach({
 						password: password,
-						email: email,
 					});
 
 					let breached = false;
@@ -207,10 +206,7 @@ export const columns: ColumnDef<Credential>[] = [
 									<DropdownMenuItem
 										className="hover:cursor-pointer"
 										onClick={() =>
-											checkForBreach(
-												cred.password,
-												cred.username,
-											)
+											checkForBreach(cred.password)
 										}
 										disabled={breachLimit}
 									>

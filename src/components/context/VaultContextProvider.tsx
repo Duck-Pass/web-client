@@ -22,14 +22,10 @@ export const VaultContextProvider = ({ children }: Props) => {
 		setVault(JSON.parse(JSON.stringify(v)));
 	};
 
-	const checkBreach = async (payload: {
-		password: string;
-		email: string;
-	}) => {
+	const checkBreach = async (payload: { password: string }) => {
 		const token = localStorage.getItem("token");
 		const passwordHash = (await sha1(payload.password)).toUpperCase();
 		const params = {
-			email: payload.email,
 			// Send 5 first characters of the SHA-1 hash of the password
 			hash_begin: passwordHash.substring(0, 5),
 		};
