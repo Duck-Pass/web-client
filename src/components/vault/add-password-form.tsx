@@ -31,7 +31,7 @@ const formSchema = z.object({
 	password: z.string().min(8),
 	note: z.string().optional(),
 	authKey: z.string().optional(),
-	website: z.string().url(),
+	website: z.string().url().optional(),
 });
 
 export function AddPasswordForm({
