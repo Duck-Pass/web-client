@@ -10,6 +10,7 @@ import ProfileAccountForm from "./profile-account-form";
 import ProfilePasswordForm from "./profile-password-form";
 import { useContext } from "react";
 import { AuthContext } from "@/components/context/AuthContext";
+import BreachesModal from "./email-breach/breach-modal";
 
 export default function ProfileTabs() {
 	const { error } = useContext(AuthContext);
@@ -23,6 +24,7 @@ export default function ProfileTabs() {
 			<TabsContent value="account">
 				<Card>
 					<CardHeader>
+						<BreachesModal />
 						<CardTitle>Account</CardTitle>
 						<CardDescription>
 							{error ? (
