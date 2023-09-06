@@ -1,5 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -71,6 +73,8 @@ export function RegisterAuthForm({
 		},
 	});
 
+	const [type, setType] = useState<string>("password");
+
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const primitives = new WebCryptoPrimitivesService(window);
 		const encryptionService = new WebCryptoEncryptionService(primitives);
@@ -125,6 +129,14 @@ export function RegisterAuthForm({
 		}
 	}
 
+	async function handleToggleVisibility() {
+		if (type === "password") {
+			setType("text");
+			return;
+		}
+		setType("password");
+	}
+
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
@@ -148,7 +160,24 @@ export function RegisterAuthForm({
 						<FormItem>
 							<FormLabel>Password</FormLabel>
 							<FormControl>
-								<Input type="password" {...field} />
+								<div className="flex w-full items-center space-x-2">
+									<Input type={type} {...field} />
+									{type === "password" ? (
+										<Eye
+											className="hover:cursor-pointer"
+											onClick={() => {
+												handleToggleVisibility();
+											}}
+										/>
+									) : (
+										<EyeOff
+											className="hover:cursor-pointer"
+											onClick={() => {
+												handleToggleVisibility();
+											}}
+										/>
+									)}
+								</div>
 							</FormControl>
 							<PasswordStrengthMeter
 								password={form.getValues().password}

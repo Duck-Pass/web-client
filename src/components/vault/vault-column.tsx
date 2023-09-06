@@ -70,6 +70,17 @@ export const columns: ColumnDef<Credential>[] = [
 	{
 		accessorKey: "website",
 		header: "Website",
+		cell: ({ row }) => {
+			return (
+				<a
+					href={row.getValue("website")}
+					target="_blank"
+					className="underline"
+				>
+					{row.getValue("website")}
+				</a>
+			);
+		},
 	},
 	{
 		accessorKey: "note",
@@ -130,10 +141,6 @@ export const columns: ColumnDef<Credential>[] = [
 			const { updateVault, checkBreach, breachLimit } =
 				useContext(VaultContext);
 			const { toast } = useToast();
-
-			function isValidEmail(email: string) {
-				return /\S+@\S+\.\S+/.test(email);
-			}
 
 			async function checkForBreach(password: string) {
 				// Check the breach limit rate to avoid spamming HIBP API
@@ -202,20 +209,16 @@ export const columns: ColumnDef<Credential>[] = [
 										</Button>
 									</DialogTrigger>
 								</DropdownMenuItem>
-								{isValidEmail(cred.username) ? (
-									<DropdownMenuItem
-										className="hover:cursor-pointer"
-										onClick={() =>
-											checkForBreach(cred.password)
-										}
-										disabled={breachLimit}
-									>
-										<CheckCircle className="text-gray-500 mr-2 w-4" />
-										Verify
-									</DropdownMenuItem>
-								) : (
-									""
-								)}
+								<DropdownMenuItem
+									className="hover:cursor-pointer"
+									onClick={() =>
+										checkForBreach(cred.password)
+									}
+									disabled={breachLimit}
+								>
+									<CheckCircle className="text-gray-500 mr-2 w-4" />
+									Verify
+								</DropdownMenuItem>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
 									className="hover:cursor-pointer"

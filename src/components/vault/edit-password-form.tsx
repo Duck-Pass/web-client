@@ -1,6 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,8 +13,15 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import PasswordStrengthMeter from "./password-strength-meter";
+import { Copy } from "lucide-react";
+import PasswordGeneratorPopover from "./password-generator-popover";
 import { Credential, VaultManager } from "@/lib/models/vault";
 import { VaultContext } from "../context/VaultContext";
 import { useContext } from "react";
@@ -27,7 +36,7 @@ const formSchema = z.object({
 	name: z.string().trim().min(5),
 	username: z.string().trim(),
 	password: z.string().min(8),
-	website: z.string().url().optional(),
+	website: z.string().url().optional().or(z.literal("")),
 	note: z.string().optional(),
 	authKey: z.string().optional(),
 });
@@ -47,6 +56,7 @@ export function EditPasswordForm(props: PasswordModalProps) {
 	});
 	const { updateVault } = useContext(VaultContext);
 	const { toast } = useToast();
+	const [type, setType] = useState<string>("password");
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const manager = VaultManager.getInstance();
@@ -77,6 +87,14 @@ export function EditPasswordForm(props: PasswordModalProps) {
 			title: "Information updated!",
 			description: "Your credential information have been updated!",
 		});
+	}
+
+	async function handleToggleVisibility() {
+		if (type === "password") {
+			setType("text");
+			return;
+		}
+		setType("password");
 	}
 
 	return (
@@ -118,7 +136,47 @@ export function EditPasswordForm(props: PasswordModalProps) {
 						<FormItem>
 							<FormLabel>Password</FormLabel>
 							<FormControl>
-								<Input type="password" {...field} />
+								<div className="flex w-full items-center space-x-2">
+									<Input
+										type={type}
+										autoComplete="current-password"
+										{...field}
+									/>
+									{type === "password" ? (
+										<Eye
+											className="hover:cursor-pointer w-8 h-8"
+											onClick={() => {
+												handleToggleVisibility();
+											}}
+										/>
+									) : (
+										<EyeOff
+											className="hover:cursor-pointer w-8 h-8"
+											onClick={() => {
+												handleToggleVisibility();
+											}}
+										/>
+									)}
+									<PasswordGeneratorPopover />
+									<Popover>
+										<PopoverTrigger asChild>
+											<Button
+												type="button"
+												onClick={() =>
+													navigator.clipboard.writeText(
+														form.getValues()
+															.password,
+													)
+												}
+											>
+												<Copy />
+											</Button>
+										</PopoverTrigger>
+										<PopoverContent className="w-auto">
+											Copied!
+										</PopoverContent>
+									</Popover>
+								</div>
 							</FormControl>
 							<PasswordStrengthMeter
 								password={form.getValues().password}
