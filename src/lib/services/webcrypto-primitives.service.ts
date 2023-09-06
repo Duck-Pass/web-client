@@ -4,6 +4,9 @@ import { DecryptParameters } from "../models/decrypt-parameters";
 import { SymmetricCryptoKey } from "../models/symmetric-crypto-key";
 import { CsprngArray } from "../types/csprng";
 
+/**
+ * @description this class implements the primitive service using the WebCrypto API
+ */
 export class WebCryptoPrimitivesService implements PrimitiveService {
 	private subtle: SubtleCrypto;
 	private crypto: Crypto;

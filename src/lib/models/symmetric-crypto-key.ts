@@ -3,6 +3,16 @@ import { BufferUtils } from "../BufferUtils";
 
 // Encrypted Key using AES-256-CBC with HMAC-SHA256
 
+/**
+ * @description this class describe a Symmetric Crypto Key.
+ * @property key the key as a Uint8Array
+ * @property encKey the encryption key as a Uint8Array
+ * @property macKey the MAC key as a Uint8Array
+ * @property b64key the key as a base64 string
+ * @property b64encKey the encryption key as a base64 string
+ * @property b64macKey the MAC key as a base64 string
+ * @property meta the meta data
+ */
 export class SymmetricCryptoKey {
 	key: Uint8Array;
 	encKey: Uint8Array;
@@ -15,6 +25,11 @@ export class SymmetricCryptoKey {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	meta: any;
 
+	/**
+	 * @description create a SymmetricCryptoKey
+	 * @param key random bytes to use as a key
+	 * @param authenticated if true, the key will be split in two parts: the first 16 bytes will be used as encryption key, the last 16 bytes will be used as MAC key
+	 */
 	constructor(key: Uint8Array, authenticated = false) {
 		this.key = key;
 		if (key.byteLength === 64) {
@@ -37,6 +52,10 @@ export class SymmetricCryptoKey {
 		}
 	}
 
+	/**
+	 * @description create a SymmetricCryptoKey from a base64 string
+	 * @returns the key as a JSON object
+	 */
 	toJSON() {
 		return { b64key: this.b64key };
 	}
