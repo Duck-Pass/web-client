@@ -5,10 +5,7 @@ type IVaultContext = {
 	vault: Vault;
 	breachLimit: boolean;
 	updateVault: (data: Vault) => void;
-	checkBreach: (payload: {
-		password: string;
-		email: string;
-	}) => Promise<number | null>;
+	checkBreach: (payload: { password: string }) => Promise<number | null>;
 };
 
 const defaultValues = {
