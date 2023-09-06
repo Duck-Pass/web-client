@@ -6,7 +6,6 @@ export type Breach = {
 	Name: string;
 	Domain: string;
 	BreachDate: string;
-	LogoPath: string;
 	DataClasses: string[];
 };
 
