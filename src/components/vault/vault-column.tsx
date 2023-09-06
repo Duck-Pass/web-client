@@ -70,6 +70,17 @@ export const columns: ColumnDef<Credential>[] = [
 	{
 		accessorKey: "website",
 		header: "Website",
+		cell: ({ row }) => {
+			return (
+				<a
+					href={row.getValue("website")}
+					target="_blank"
+					className="underline"
+				>
+					{row.getValue("website")}
+				</a>
+			);
+		},
 	},
 	{
 		accessorKey: "note",

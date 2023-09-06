@@ -1,6 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,7 +33,7 @@ const formSchema = z.object({
 	password: z.string().min(8),
 	note: z.string().optional(),
 	authKey: z.string().optional(),
-	website: z.string().url().optional(),
+	website: z.string().url().optional().or(z.literal("")),
 });
 
 export function AddPasswordForm({
@@ -40,6 +42,7 @@ export function AddPasswordForm({
 	openOnChange: (open: boolean) => void;
 }) {
 	const { updateVault } = useContext(VaultContext);
+	const [type, setType] = useState<string>("password");
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -75,6 +78,14 @@ export function AddPasswordForm({
 		openOnChange(false);
 
 		updateVault(manager.getVault());
+	}
+
+	async function handleToggleVisibility() {
+		if (type === "password") {
+			setType("text");
+			return;
+		}
+		setType("password");
 	}
 
 	return (
@@ -126,10 +137,25 @@ export function AddPasswordForm({
 							<FormControl>
 								<div className="flex w-full items-center space-x-2">
 									<Input
-										type="password"
+										type={type}
 										autoComplete="current-password"
 										{...field}
 									/>
+									{type === "password" ? (
+										<Eye
+											className="hover:cursor-pointer w-8 h-8"
+											onClick={() => {
+												handleToggleVisibility();
+											}}
+										/>
+									) : (
+										<EyeOff
+											className="hover:cursor-pointer w-8 h-8"
+											onClick={() => {
+												handleToggleVisibility();
+											}}
+										/>
+									)}
 									<PasswordGeneratorPopover />
 									<Popover>
 										<PopoverTrigger asChild>

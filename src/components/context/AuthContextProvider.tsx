@@ -92,7 +92,9 @@ export const AuthContextProvider = ({ children }: Props) => {
 			responseToken.status === 404 ||
 			responseToken.status === 401
 		) {
-			setError("Invalid credentials");
+			setError(
+				"Invalid credentials. Reminder: You must validate your mail to login.",
+			);
 			return;
 		} else if (
 			responseToken.status === 200 &&
