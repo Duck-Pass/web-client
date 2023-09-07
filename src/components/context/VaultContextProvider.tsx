@@ -22,6 +22,11 @@ export const VaultContextProvider = ({ children }: Props) => {
 		setVault(JSON.parse(JSON.stringify(v)));
 	};
 
+	/**
+	 * Check if a password is exposed
+	 * @param payload
+	 * @returns Number of exposition of the password
+	 */
 	const checkBreach = async (payload: { password: string }) => {
 		const token = localStorage.getItem("token");
 		const passwordHash = (await sha1(payload.password)).toUpperCase();

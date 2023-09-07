@@ -1,5 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -36,9 +38,18 @@ export function LoginAuthForm() {
 		},
 	});
 	const { login } = useContext(AuthContext);
+	const [type, setType] = useState<string>("password");
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		login({ username: values.email, password: values.password });
+	}
+
+	async function handleToggleVisibility() {
+		if (type === "password") {
+			setType("text");
+			return;
+		}
+		setType("password");
 	}
 
 	return (
@@ -72,11 +83,28 @@ export function LoginAuthForm() {
 							<FormItem>
 								<FormLabel>Password</FormLabel>
 								<FormControl>
-									<Input
-										type="password"
-										autoComplete="current-password"
-										{...field}
-									/>
+									<div className="flex w-full items-center space-x-2">
+										<Input
+											type={type}
+											autoComplete="current-password"
+											{...field}
+										/>
+										{type === "password" ? (
+											<Eye
+												className="hover:cursor-pointer"
+												onClick={() => {
+													handleToggleVisibility();
+												}}
+											/>
+										) : (
+											<EyeOff
+												className="hover:cursor-pointer"
+												onClick={() => {
+													handleToggleVisibility();
+												}}
+											/>
+										)}
+									</div>
 								</FormControl>
 								<FormMessage />
 							</FormItem>

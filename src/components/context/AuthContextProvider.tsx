@@ -30,6 +30,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 		password: string;
 		totp?: string;
 	}) => {
+		// Compute master key hash
 		const primitives = new WebCryptoPrimitivesService(window);
 		const encryptionService = new WebCryptoEncryptionService(primitives);
 		const cryptoService = new CryptoService(primitives, encryptionService);
@@ -43,6 +44,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 			1,
 		);
 
+		// Send the payload to the API
 		setError("");
 		const authUrl = payload.totp
 			? env.api + "/check_two_factor_auth"
@@ -74,6 +76,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 			setError(error.message);
 		});
 
+		// Treat the response
 		if (!responseToken) {
 			return;
 		}
@@ -120,6 +123,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 			return;
 		}
 
+		// Get the user data from the API after fetching the access token
 		const response = await fetch(env.api + "/get_user", {
 			headers: {
 				Accept: "application/json",
@@ -139,6 +143,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 			);
 			data.hash_master_key = hashMasterKey;
 
+			// Store the user data in the localStorage
 			localStorage.setItem(
 				"userProfile",
 				JSON.stringify({
@@ -150,6 +155,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 				}),
 			);
 
+			// Decrypt the user vault locally
 			if (data.vault) {
 				const encryptedVault = new EncryptedString(
 					data.vault as EncString,
@@ -206,6 +212,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 		setUser({});
 		setAuthKey({ authKey: "", url: "" });
 	};
+
 	const genAuthKey = async () => {
 		const token = localStorage.getItem("token");
 		const response = await fetch(env.api + "/generate_auth_key", {
@@ -218,13 +225,16 @@ export const AuthContextProvider = ({ children }: Props) => {
 		setError("");
 		setAuthKey({ authKey: data.auth_key, url: data.url });
 	};
+
 	const enable2FA = async (payload: { authKey: string; totp: string }) => {
+		// Setup the payload
 		const token = localStorage.getItem("token");
 		const twoFactorParams = {
 			auth_key: payload.authKey,
 			totp_code: payload.totp.toString(),
 		};
 		setError("");
+		// Send the payload to the API
 		const response = await fetch(
 			env.api +
 				"/enable_two_factor_auth?" +
@@ -240,6 +250,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 			setError(error.message);
 		});
 
+		// Treat the response
 		if (!response) {
 			setError("Something went wrong. Please try again later.");
 			return;
@@ -264,7 +275,10 @@ export const AuthContextProvider = ({ children }: Props) => {
 
 		setError("Validation failed.");
 	};
+
 	const disable2FA = async () => {
+		// Setup the payload
+		setError("");
 		const token = localStorage.getItem("token");
 		const response = await fetch(env.api + "/disable_two_factor_auth", {
 			method: "POST",
@@ -276,6 +290,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 			setError(error.message);
 		});
 
+		// Treat the response
 		if (!response) {
 			setError("Something went wrong. Please try again later.");
 			return;
@@ -305,7 +320,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 		currentPassword: string;
 	}) => {
 		setError("");
-		// Verify currentPassword
+		// Verify currentPassword hash
 		const primitives = new WebCryptoPrimitivesService(window);
 		const encryptionService = new WebCryptoEncryptionService(primitives);
 		const cryptoService = new CryptoService(primitives, encryptionService);
@@ -342,7 +357,6 @@ export const AuthContextProvider = ({ children }: Props) => {
 		);
 
 		// Update Vault with new master key
-
 		const encryptedVault = await VaultManager.getInstance().encrypt(
 			userKey,
 		);
@@ -351,6 +365,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 			return;
 		}
 
+		// Send the new information (new vault encrypted + new key + new email) to the API
 		const response = await fetch(env.api + "/update_email", {
 			method: "PUT",
 			headers: {
@@ -372,6 +387,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 			setError(error);
 		});
 
+		// Treat the response
 		if (!response) {
 			setError("Something went wrong. Please try again later.");
 			return;
@@ -435,7 +451,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 			newMasterKey,
 		);
 
-		// Update Vault with new master
+		// Update Vault with new master key
 		const verifyMasterKey = await cryptoService.makeMasterKey(
 			payload.verifyPassword,
 			user.email,
@@ -454,6 +470,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 			return;
 		}
 
+		// Prepare the payload for the API
 		const params = {
 			user_auth: {
 				email: user.email,
@@ -465,7 +482,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 				vault: encryptedVault?.toJSON(),
 			},
 		};
-		// Send the new information to the
+		// Send the new information to the API
 		const token = localStorage.getItem("token");
 		const response = await fetch(env.api + "/update_password", {
 			method: "PUT",
@@ -479,6 +496,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 			setError(error.message);
 		});
 
+		// Treat the response
 		if (!response) {
 			setError("Something went wrong. Please try again later.");
 			return;
