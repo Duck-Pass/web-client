@@ -124,10 +124,6 @@ export function AddPasswordForm({
 						</FormItem>
 					)}
 				/>
-				<p className="text-sm text-muted-foreground mb-2">
-					Only account with an email provided in username can be
-					verified for breaches.
-				</p>
 				<FormField
 					control={form.control}
 					name="password"
@@ -135,7 +131,7 @@ export function AddPasswordForm({
 						<FormItem>
 							<FormLabel>Password</FormLabel>
 							<FormControl>
-								<div className="flex w-full items-center space-x-2">
+								<div className="flex w-full items-center space-x-1">
 									<Input
 										type={type}
 										autoComplete="current-password"
@@ -143,14 +139,14 @@ export function AddPasswordForm({
 									/>
 									{type === "password" ? (
 										<Eye
-											className="hover:cursor-pointer w-8 h-8"
+											className="hover:cursor-pointer h-10 w-10"
 											onClick={() => {
 												handleToggleVisibility();
 											}}
 										/>
 									) : (
 										<EyeOff
-											className="hover:cursor-pointer w-8 h-8"
+											className="hover:cursor-pointer h-10 w-10"
 											onClick={() => {
 												handleToggleVisibility();
 											}}
