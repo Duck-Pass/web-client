@@ -10,6 +10,7 @@ type IVaultContext = {
 
 const defaultValues = {
 	vault: [],
+	// Set a limit for password breaches to avoid spamming HIBP API
 	breachLimit: false,
 	updateVault: async () => {},
 	checkBreach: async () => 0,

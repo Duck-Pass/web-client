@@ -68,10 +68,7 @@ export default function Features() {
 					{/* Section content */}
 					<div className="md:grid md:grid-cols-12 md:gap-6">
 						{/* Content */}
-						<div
-							className="text-center md:text-left max-w-xl md:max-w-none md:w-full mx-auto md:col-span-7 lg:col-span-6 md:mt-6"
-							data-aos="fade-right"
-						>
+						<div className="text-center md:text-left max-w-xl md:max-w-none md:w-full mx-auto md:col-span-7 lg:col-span-6 md:mt-6">
 							<div className="md:pr-4 lg:pr-12 xl:pr-16 mb-8">
 								<h3 className="h3 mb-3">Powerful features</h3>
 								<p className="text-xl text-gray-600">

@@ -79,7 +79,11 @@ export default function ProfilePasswordForm() {
 						<FormItem>
 							<FormLabel>Old password</FormLabel>
 							<FormControl>
-								<Input type="password" {...field} />
+								<Input
+									type="password"
+									autoComplete="current-password"
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
